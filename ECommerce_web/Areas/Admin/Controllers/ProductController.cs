@@ -1,4 +1,5 @@
-﻿using ECommerce_web.Repository;
+﻿using ECommerce_web.Models;
+using ECommerce_web.Repository;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -23,5 +24,12 @@ namespace ECommerce_web.Areas.Admin.Controllers
             ViewBag.Brands = new SelectList(_dataContext.Brands, "Id", "Name");
             return View();
         }
+        public async Task<IActionResult> Create(ProductModel product)
+        {
+            ViewBag.Categories = new SelectList(_dataContext.Categories, "Id", "Name", product.CategoryId);
+            ViewBag.Brands = new SelectList(_dataContext.Brands, "Id", "Name", product.BrandId);
+            return View(product); 
+        }
+       
     }
 }

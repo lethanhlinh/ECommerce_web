@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using ECommerce_web.Repository.Validation;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ECommerce_web.Models
 {
@@ -19,5 +21,9 @@ namespace ECommerce_web.Models
 		public BrandModel Brand { get; set; }
 
 		public string Image {  get; set; }
+		[NotMapped]
+		[FileExtension]
+		public IFormFile ImageUpload { get; set; }
+
 	}
 }
