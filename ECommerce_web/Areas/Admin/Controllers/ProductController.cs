@@ -28,6 +28,16 @@ namespace ECommerce_web.Areas.Admin.Controllers
         {
             ViewBag.Categories = new SelectList(_dataContext.Categories, "Id", "Name", product.CategoryId);
             ViewBag.Brands = new SelectList(_dataContext.Brands, "Id", "Name", product.BrandId);
+
+            if(ModelState.IsValid)
+            {
+                //code them dl
+
+            }
+            else
+            {
+                TempData["error"] = "Model có một vài thứ đang bị lỗi";
+            }
             return View(product); 
         }
        
