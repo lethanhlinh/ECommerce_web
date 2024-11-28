@@ -1,17 +1,17 @@
-﻿@model IEnumerable<CategoryModel>
+﻿@model IEnumerable<BrandModel>
 @{
-    ViewData["title"] = "Categories Listed";
+    ViewData["title"] = "Brand Listed";
 }
-<h3>List Categories</h3>
-<a asp-action="Create" asp-controller="Category">Add Categories</a>
+<h3>List Brand</h3>
+<a asp-action="Create" asp-controller="Brand">Add Brand</a>
 <table class="table">
     <thead>
         <tr>
             <th scope="col">#</th>
-            <th scope="col">Category Name</th>
-            <th scope="col">Category Description</th>
-            <th scope="col">Category Slug</th>
-            <th scope="col">Category Status</th>
+            <th scope="col">Brand Name</th>
+            <th scope="col">Brand Description</th>
+            <th scope="col">Brand Slug</th>
+            <th scope="col">Brand Status</th>
         </tr>
     </thead>
     <tbody>
@@ -24,7 +24,7 @@
                 <td>@item.Slug</td>
 
                 <td>
-                    @if(@item.Status == 1)
+                    @if (@item.Status == 1)
                     {
                         <span class="text text-success">Hiển thị</span>
                     }
@@ -35,8 +35,8 @@
                 </td>
 
                 <td>
-                    <a asp-action="Edit" asp-controller="Category" asp-route-Id="@item.Id" class="btn btn-warning btn-sm">Edit</a>
-                    <a asp-action="Delete" class="btn btn-danger btn-sm confirmDeletion" asp-controller="Category" asp-route-Id="@item.Id">Delete</a>
+                    <a asp-action="Edit" asp-controller="Brand" asp-route-Id="@item.Id" class="btn btn-warning btn-sm">Edit</a>
+                    <a asp-action="Delete" class="btn btn-danger btn-sm confirmDeletion" asp-controller="Brand" asp-route-Id="@item.Id">Delete</a>
                 </td>
             </tr>
         }
