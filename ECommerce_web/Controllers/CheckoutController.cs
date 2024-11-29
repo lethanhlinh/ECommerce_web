@@ -23,17 +23,31 @@ namespace ECommerce_web.Controllers
             }
             else
             {
-                var orderCode = Guid.NewGuid().ToString();
+                var ordercode = Guid.NewGuid().ToString();
                 var orderItem = new OrderModel();
                 orderItem.UserName = userEmail;
-                orderItem.OrderCode = orderCode;
+                orderItem.OrderCode = ordercode;
                 orderItem.Status = 1;
                 orderItem.CreateDate = DateTime.Now;
 
                 _dataContext.Add(orderItem);
                 _dataContext.SaveChanges();
 
-                TempData["success"] = "Đơn hàng đã được đặt";
+                List<CartItemModel> cartItems = HttpContext.Session.GetJson<List<CartItemModel>>("Cart") ?? new List<CartItemModel>();
+                foreach (var cart in cartItems)
+                {
+                    var orderdetails = new OrderDetails();
+                    orderdetails.UserName = userEmail;
+                    orderdetails.OrderCode = ordercode;
+                    orderdetails.ProductId = cart.ProductId;
+                    orderdetails.Price =cart.Price;
+                    orderdetails.Quantity =cart.Quantity;
+
+                    _dataContext.Add(orderdetails);
+                    _dataContext.SaveChanges();
+                }
+                HttpContext.Session.Remove("Cart");
+                TempData["success"] = "Checkout thành công, vui lòng chờ duyệt đơn hàng";
                 return RedirectToAction("Index", "Cart");
             }
             return View();

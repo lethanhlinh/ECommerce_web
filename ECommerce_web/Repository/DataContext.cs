@@ -17,5 +17,6 @@ namespace ECommerce_web.Repository
         public DbSet<OrderModel> Orders { get; set; }
         public DbSet<OrderDetails> OrderDetails { get; set; }
 
+
     }
 }
