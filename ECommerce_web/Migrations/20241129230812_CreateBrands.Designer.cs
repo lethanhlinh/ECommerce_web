@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ECommerce_web.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20241129180237_EditLongProductid")]
-    partial class EditLongProductid
+    [Migration("20241129230812_CreateBrands")]
+    partial class CreateBrands
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -172,6 +172,8 @@ namespace ECommerce_web.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("ProductId");
+
                     b.ToTable("OrderDetails");
                 });
 
@@ -202,11 +204,11 @@ namespace ECommerce_web.Migrations
 
             modelBuilder.Entity("ECommerce_web.Models.ProductModel", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("bigint");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
                     b.Property<int>("BrandId")
                         .HasColumnType("int");
@@ -370,6 +372,17 @@ namespace ECommerce_web.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens", (string)null);
+                });
+
+            modelBuilder.Entity("ECommerce_web.Models.OrderDetails", b =>
+                {
+                    b.HasOne("ECommerce_web.Models.ProductModel", "Product")
+                        .WithMany()
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Product");
                 });
 
             modelBuilder.Entity("ECommerce_web.Models.ProductModel", b =>

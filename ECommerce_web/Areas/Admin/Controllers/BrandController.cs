@@ -16,7 +16,8 @@ namespace ECommerce_web.Areas.Admin.Controllers
         {
             _dataContext = dataContext;
         }
-
+	
+	
         public async Task<IActionResult> Index()
         {
             return View(await _dataContext.Brands.OrderByDescending(c => c.Id).ToListAsync());
