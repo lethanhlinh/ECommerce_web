@@ -1,15 +1,14 @@
 ﻿using ECommerce_web.Models;
 using ECommerce_web.Repository;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace ECommerce_web.Areas.Admin.Controllers
 {
     [Area("Admin")]
-   
-
-
-    public class BrandController : Controller
+	[Authorize]
+	public class BrandController : Controller
     {
 
         private readonly DataContext _dataContext;
@@ -94,16 +93,36 @@ namespace ECommerce_web.Areas.Admin.Controllers
 
 			if (ModelState.IsValid)
 			{
-				// code thêm dữ liệu
-				brand.Slug = brand.Name.Replace(" ", "-");
-				var slug = await _dataContext.Brands.FirstOrDefaultAsync(c => c.Slug == brand.Slug);
-				if (slug != null)
-				{
-					ModelState.AddModelError("", "Thương hiệu đã tồn tại!!!");
-					return View(brand);
-				}
+                // Lấy danh mục hiện tại từ cơ sở dữ liệu
+                var existingBrand = await _dataContext.Brands.FindAsync(brand.Id);
 
-				_dataContext.Update(brand);
+                if (existingBrand == null)
+                {
+                    return NotFound();
+                }
+
+                // Kiểm tra nếu tên danh mục (Name) có thay đổi không
+                if (existingBrand.Name != brand.Name)
+                {
+                    // Nếu tên thay đổi, tạo lại Slug và kiểm tra trùng lặp
+                    brand.Slug = brand.Name.Replace(" ", "-");
+                    var slug = await _dataContext.Brands.FirstOrDefaultAsync(b => b.Slug == brand.Slug);
+                    if (slug != null)
+                    {
+                        ModelState.AddModelError("", "Danh mục đã tồn tại!!!");
+                        return View(brand);
+                    }
+                }
+                else
+                {
+                    // Nếu chỉ thay đổi mô tả, không cần thay đổi slug
+                    brand.Slug = existingBrand.Slug;
+                }
+
+                // Đảm bảo không có entity trùng lặp
+                _dataContext.Entry(existingBrand).State = EntityState.Detached;
+
+                _dataContext.Update(brand);
 				await _dataContext.SaveChangesAsync();
 				TempData["success"] = "Cập nhật thương hiệu thành công!!!";
 				return RedirectToAction("Index");

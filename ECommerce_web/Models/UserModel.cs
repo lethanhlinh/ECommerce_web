@@ -11,6 +11,8 @@ namespace ECommerce_web.Models
         public string Email { get; set; }
         [DataType(DataType.Password),Required(ErrorMessage ="Làm ơn nhập Password")]
         public string Password { get; set; }
-       
-    }
+		[DataType(DataType.Password), Required(ErrorMessage = "Làm ơn nhập ConfirmPassword")]
+		public string ConfirmPassword { get; set; }
+
+	}
 }

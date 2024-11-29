@@ -1,5 +1,6 @@
 ﻿using ECommerce_web.Models;
 using ECommerce_web.Repository;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -7,7 +8,8 @@ using Microsoft.EntityFrameworkCore;
 namespace ECommerce_web.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    public class ProductController : Controller
+	[Authorize]
+	public class ProductController : Controller
     {
         private readonly DataContext _dataContext;
         private readonly IWebHostEnvironment _iwebHostEnviroment;

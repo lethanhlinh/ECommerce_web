@@ -27,4 +27,11 @@
     <Folder Include="wwwroot\backend\images\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Update="wwwroot\media\products\1.jpg">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+  </ItemGroup>
+
 </Project>

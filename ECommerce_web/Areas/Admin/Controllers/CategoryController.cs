@@ -1,5 +1,6 @@
 ﻿using ECommerce_web.Models;
 using ECommerce_web.Repository;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -8,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 namespace ECommerce_web.Areas.Admin.Controllers
 {
 	[Area("Admin")]
+	[Authorize]
 	public class CategoryController : Controller 
 	{
 		private readonly DataContext _dataContext;
