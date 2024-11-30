@@ -14,7 +14,7 @@ namespace ECommerce_web.Controllers
 		{
 			return View();
 		}
-		public async Task<IActionResult> Details(int id)
+		public async Task<IActionResult> Details(long id)
 		{
 			if(id == null) RedirectToAction("Index");
 

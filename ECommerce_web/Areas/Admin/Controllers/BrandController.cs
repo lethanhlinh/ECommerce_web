@@ -145,9 +145,5 @@ namespace ECommerce_web.Areas.Admin.Controllers
 
 			return View(brand);
 		}
-
 	}
-
-
-
 }

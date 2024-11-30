@@ -27,7 +27,7 @@ namespace ECommerce_web.Controllers
 		{
 			return View("~/Views/Checkout/Index.cshtml");
 		}
-		public async Task<IActionResult> Add(int Id)
+		public async Task<IActionResult> Add(long Id)
 		{
 			ProductModel product = await _dataContext.Products.FindAsync(Id);
 
@@ -53,7 +53,7 @@ namespace ECommerce_web.Controllers
 		}
 
 		//Ham giam
-		public async Task<IActionResult> Decrease(int Id)
+		public async Task<IActionResult> Decrease(long Id)
 		{
 			List<CartItemModel> cart = HttpContext.Session.GetJson<List<CartItemModel>>("Cart");
 
@@ -85,7 +85,7 @@ namespace ECommerce_web.Controllers
 		}
 
 		//Ham tang 
-		public async Task<IActionResult> Increase(int Id)
+		public async Task<IActionResult> Increase(long Id)
 		{
 			List<CartItemModel> cart = HttpContext.Session.GetJson<List<CartItemModel>>("Cart");
 
@@ -133,7 +133,7 @@ namespace ECommerce_web.Controllers
             TempData["success"] = "Remove Item of cart Successfully! ";
             return RedirectToAction("Index");
 		}
-		public async Task<IActionResult> Clear(int id)
+		public async Task<IActionResult> Clear(long id)
 		{
 			//xoa het gio hang
 			HttpContext.Session.Remove("Cart");

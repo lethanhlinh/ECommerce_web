@@ -10,10 +10,8 @@
             <th scope="col">#</th>
             <th scope="col"> Order Code</th>
             <th scope="col">UserName</th>
-            h scope="col">Order Date</th>
-            <th scope="col">Order Status</th>
-            <t
-
+            <th scope="col">Quantity</th>
+            <th scope="col">ProductId</th>
         </tr>
     </thead>
     <tbody>
@@ -22,21 +20,9 @@
             <tr>
                 <th>#</th>
                 <th scope="row">@item.OrderCode</th>
-                @*<td>@item.UserName</td>
-            <td>@item.CreateDate</td>
-
-
-            <td>
-            @if (@item.Status == 1)
-            {
-            <span class="text text-success">Đơn hàng mới</span>
-            }
-            else
-            {
-            <span class="text text-danger">Đơn hàng thành công</span>
-            }
-            </td> *@
-
+                <td>@item.UserName</td>
+                <td>@item.Quantity</td>
+                <td>@item.ProductId</td>
             </tr>
         }
     </tbody>

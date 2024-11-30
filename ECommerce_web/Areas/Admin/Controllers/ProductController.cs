@@ -81,7 +81,7 @@ namespace ECommerce_web.Areas.Admin.Controllers
             return View(product);
 		}
 		[HttpGet]
-        public async Task<IActionResult> Edit(int Id)
+        public async Task<IActionResult> Edit(long Id)
         {
             ProductModel product = await _dataContext.Products.FindAsync(Id);
             ViewBag.Categories = new SelectList(_dataContext.Categories, "Id", "Name");

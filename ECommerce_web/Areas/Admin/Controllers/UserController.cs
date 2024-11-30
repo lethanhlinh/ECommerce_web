@@ -1,15 +1,15 @@
 ﻿using ECommerce_web.Models;
-using ECommerce_web.Repository;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using System.Numerics;
 
 namespace ECommerce_web.Areas.Admin.Controllers
 {
     [Area("Admin")]
     [Route("Admin/User")]
+    //[Authorize(Roles ="Admin")]
     public class UserController : Controller
     {
         private readonly UserManager<AppUserModel> _userManager;
@@ -55,7 +55,7 @@ namespace ECommerce_web.Areas.Admin.Controllers
                         ModelState.AddModelError(string.Empty, error.Description);
                     }
         
-    }
+             }
             }
             else 
             {
@@ -77,16 +77,34 @@ namespace ECommerce_web.Areas.Admin.Controllers
             return View(user);
 
         }
+        [HttpGet]
+        [Route("Edit")]
+        public async Task<IActionResult> Edit(string id)
+        {
+            if (string.IsNullOrEmpty(id))
+            {
+                return NotFound();
+            }
+            var user = await _userManager.FindByNameAsync(id);
+            if (user == null)
+            {
+                return NotFound();
+            }
+            var roles = await _roleManager.Roles.ToListAsync();
+            ViewBag.Roles = new SelectList(roles, "Id", "Name");
+
+            return View(user);
+        }
 
         [HttpGet]
         [Route("Delete")]
         public async Task<IActionResult> Delete(string id)
         {
-         if (string.IsNullOrEmpty(id))
+            if (string.IsNullOrEmpty(id))
             {
                 return NotFound();
             }
-         var user = await _userManager.FindByNameAsync(id);
+             var user = await _userManager.FindByNameAsync(id);
             if (user == null) 
             {
                 return NotFound();
