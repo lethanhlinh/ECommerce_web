@@ -27,17 +27,20 @@ namespace ECommerce_web.Areas.Admin.Controllers
         {
             return View(await _userManager.Users.OrderByDescending(c => c.Id).ToListAsync());
         }
-        [HttpGet]
-        [Route("Create")]
-        public async Task<IActionResult> Create()
-        {
-            var roles = await _roleManager.Roles.ToListAsync();
-            ViewBag.Roles = new SelectList(roles, "Id", "Name");
-           
-            return View(new AppUserModel());
-        }
+
+		[HttpGet]
+		[Route("Create")]
+		public async Task<IActionResult> Create()
+		{
+			var roles = await _roleManager.Roles.ToListAsync();
+			ViewBag.Roles = new SelectList(roles, "Id", "Name");
+
+			return View(new AppUserModel());
+		}
+
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Route("Create")]
         public async Task<IActionResult> Create(AppUserModel user)
         {
             if (ModelState.IsValid)
@@ -49,15 +52,14 @@ namespace ECommerce_web.Areas.Admin.Controllers
                 }
                 else
                 {
-             
                     foreach (var error in createUserResult.Errors)
                     {
                         ModelState.AddModelError(string.Empty, error.Description);
                     }
-        
-             }
+                    return View(user);
+                }
             }
-            else 
+            else
             {
                 TempData["error"] = "Model có một vài thứ đang bị lỗi!!!";
                 List<string> errors = new List<string>();
@@ -75,26 +77,10 @@ namespace ECommerce_web.Areas.Admin.Controllers
             ViewBag.Roles = new SelectList(roles, "Id", "Name");
 
             return View(user);
-
         }
-        [HttpGet]
-        [Route("Edit")]
-        public async Task<IActionResult> Edit(string id)
-        {
-            if (string.IsNullOrEmpty(id))
-            {
-                return NotFound();
-            }
-            var user = await _userManager.FindByNameAsync(id);
-            if (user == null)
-            {
-                return NotFound();
-            }
-            var roles = await _roleManager.Roles.ToListAsync();
-            ViewBag.Roles = new SelectList(roles, "Id", "Name");
 
-            return View(user);
-        }
+
+
 
         [HttpGet]
         [Route("Delete")]
@@ -102,21 +88,46 @@ namespace ECommerce_web.Areas.Admin.Controllers
         {
             if (string.IsNullOrEmpty(id))
             {
-                return NotFound();
+             return NotFound();
             }
              var user = await _userManager.FindByNameAsync(id);
-            if (user == null) 
-            {
-                return NotFound();
-            }
-            var deleteResult = await _userManager.DeleteAsync(user);
-            if (!deleteResult.Succeeded)
-            {
-                return View("Error");
-            }
-            TempData["success"] = "Đax xóa user thành công!!!";
-            return RedirectToAction("Index");
+              if (user == null) 
+              {
+               return NotFound();
+              }
+                var deleteResult = await _userManager.DeleteAsync(user);
+                   if (!deleteResult.Succeeded)
+                   {
+                    return View("Error");
+                   }
+                  TempData["success"] = "Đã xóa user thành công!!!";
+                  return RedirectToAction("Index");
         }
-    }
+
+
+
+
+		[HttpGet]
+		[Route("Edit")]
+		public async Task<IActionResult> Edit(string id)
+		{
+			if (string.IsNullOrEmpty(id))
+			{
+				return NotFound();
+			}
+			var user = await _userManager.FindByNameAsync(id);
+			if (user == null)
+			{
+				return NotFound();
+			}
+			var roles = await _roleManager.Roles.ToListAsync();
+			ViewBag.Roles = new SelectList(roles, "Id", "Name");
+
+			return View(user);
+		}
+
+
+
+	}
     }
 
