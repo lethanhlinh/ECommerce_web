@@ -1,9 +1,12 @@
 ﻿using ECommerce_web.Models;
+using ECommerce_web.Repository;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 namespace ECommerce_web.Areas.Admin.Controllers
 {
@@ -14,18 +17,27 @@ namespace ECommerce_web.Areas.Admin.Controllers
     {
         private readonly UserManager<AppUserModel> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
-     
-        public UserController(UserManager<AppUserModel> userManager, RoleManager<IdentityRole> roleManager)
+        private readonly DataContext _dataContext;
+        public UserController(DataContext context, UserManager<AppUserModel> userManager, RoleManager<IdentityRole> roleManager)
         {
            
             _userManager = userManager;
             _roleManager = roleManager;
+            _dataContext = context;
         }
         [HttpGet]
         [Route("Index")]
         public async Task<IActionResult> Index()
         {
-            return View(await _userManager.Users.OrderByDescending(c => c.Id).ToListAsync());
+            var usersWithRoles = await (from u in _dataContext.Users
+                                       join ur in _dataContext.UserRoles on u.Id equals ur.UserId
+                                       join r in _dataContext.Roles on ur.RoleId equals r.Id
+                                       select new { User = u, RoleName = r.Name })
+                                       .ToListAsync();
+            
+            return View(usersWithRoles);
+           // return View(await _userManager.Users.OrderByDescending(c => c.Id).ToListAsync());
+            
         }
 
 		[HttpGet]
@@ -45,9 +57,22 @@ namespace ECommerce_web.Areas.Admin.Controllers
         {
             if (ModelState.IsValid)
             {
-                var createUserResult = await _userManager.CreateAsync(user, user.PasswordHash);
+                var createUserResult = await _userManager.CreateAsync(user, user.PasswordHash); //tạo User
                 if (createUserResult.Succeeded)
                 {
+                    var createUser = await _userManager.FindByEmailAsync(user.Email); //tìm user dựa vào Email
+                    var userId = createUser.Id; //Lấy userId
+                    var role = _roleManager.FindByIdAsync(user.RoleId); //Lấy RoleId
+                    //gán quyền
+                    var addToRoleResult = await _userManager.AddToRoleAsync(createUser, role.Result.Name);
+
+                    if (!addToRoleResult.Succeeded) //Nếu add Role ko thành công
+                    {
+                        foreach (var error in createUserResult.Errors)
+                        {
+                            ModelState.AddModelError(string.Empty, error.Description);
+                        }
+                    }
                     return RedirectToAction("Index", "User");
                 }
                 else
@@ -126,8 +151,53 @@ namespace ECommerce_web.Areas.Admin.Controllers
 			return View(user);
 		}
 
+        [HttpPost]
+		[Route("Edit")]
+		[ValidateAntiForgeryToken]
+       
+        public async Task<IActionResult> Edit(string id, AppUserModel user)
+        {
+            var existingUser = await _userManager.FindByNameAsync(id); //lấu user dựa theo Username
 
+            if (existingUser == null)
+            {
+                return NotFound();
+            }
+            if (ModelState.IsValid)
+            {
+                existingUser.UserName = user.UserName;
+                existingUser.Email = user.Email;
+                existingUser.PhoneNumber = user.PhoneNumber;
+                existingUser.RoleId = user.RoleId;
 
+                var updateUserResult = await _userManager.UpdateAsync(existingUser); //thực hiện việc update
+                if (updateUserResult.Succeeded)
+                {
+                    return RedirectToAction("Index", "User");
+                }
+                else
+                {
+                    AddIdentityError(updateUserResult);
+                    return View(existingUser);
+                }    
+
+            }
+            var roles = await _roleManager.Roles.ToListAsync();
+            ViewBag.Roles = new SelectList(roles, "Id", "Name");
+
+            //Model validation failed
+            TempData["error"] = "Model validation failed";
+            var error = ModelState.Values.SelectMany(v => v.Errors.Select(e => e.ErrorMessage)).ToList();
+           
+            return View(existingUser);
+        }
+		private void AddIdentityError(IdentityResult identityResult) //Hàm để hiển thị lỗi
+		{
+			foreach (var error in identityResult.Errors)
+			{
+				ModelState.AddModelError(string.Empty, error.Description);
+			}
+		}
 	}
-    }
+ }
 
