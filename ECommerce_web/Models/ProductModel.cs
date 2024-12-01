@@ -24,6 +24,8 @@ namespace ECommerce_web.Models
 		public BrandModel Brand { get; set; }
 
 		public string Image { get; set; }
+
+		public RatingModel Ratings { get; set; }
 		[NotMapped]
 		[FileExtension]
 		public IFormFile? ImageUpload { get; set; }
