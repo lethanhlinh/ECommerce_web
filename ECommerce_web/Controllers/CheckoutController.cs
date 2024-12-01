@@ -1,4 +1,5 @@
-﻿using ECommerce_web.Models;
+﻿using ECommerce_web.Areas.Admin.Repository;
+using ECommerce_web.Models;
 using ECommerce_web.Models.ViewModels;
 using ECommerce_web.Repository;
 using Microsoft.AspNetCore.Mvc;
@@ -9,9 +10,11 @@ namespace ECommerce_web.Controllers
     public class CheckoutController : Controller
     {
         private readonly DataContext _dataContext;
-        public CheckoutController(DataContext context)
+        private readonly IEmailSender _emailSender;
+        public CheckoutController(IEmailSender emailSender, DataContext context)
         {
             _dataContext = context;
+            _emailSender = emailSender;
         }
 
         public async Task<IActionResult> Checkout()
@@ -47,7 +50,14 @@ namespace ECommerce_web.Controllers
                     _dataContext.SaveChanges();
                 }
                 HttpContext.Session.Remove("Cart");
-                TempData["success"] = "Checkout thành công, vui lòng chờ duyệt đơn hàng";
+                //Gửi mail khi đặt hàng thành công
+                var receiver = userEmail; // Người nhận
+                var subject = "Đặt hàng thành công"; //Tiêu đề
+                var message = "Đặt hàng thành công ! Cảm ơn bạn rất nhiều"; //Nội dung
+
+                await _emailSender.SendEmailAsync(receiver, subject, message);
+
+                TempData["success"] = "Đơn hàng đã được tạo thành công, vui lòng chờ duyệt đơn hàng";
                 return RedirectToAction("Index", "Cart");
             }
             return View();

@@ -1,4 +1,5 @@
-﻿using ECommerce_web.Models;
+﻿using ECommerce_web.Areas.Admin.Repository;
+using ECommerce_web.Models;
 using ECommerce_web.Models.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -9,10 +10,12 @@ namespace ECommerce_web.Controllers
     {
         private UserManager<AppUserModel> _userManager;
         private SignInManager<AppUserModel> _signInManager;
-        public AccountController(SignInManager<AppUserModel> signInManager, UserManager<AppUserModel> userManager)
+        private readonly IEmailSender _emailSender;
+        public AccountController(IEmailSender emailSender, UserManager<AppUserModel> userManager, SignInManager<AppUserModel> signInManager)
         {
             _signInManager = signInManager;
             _userManager = userManager;
+            _emailSender = emailSender;
         }
         [HttpGet]
         public IActionResult Login(string returnUrl)

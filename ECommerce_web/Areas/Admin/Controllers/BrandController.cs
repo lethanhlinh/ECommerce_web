@@ -7,7 +7,8 @@ using Microsoft.EntityFrameworkCore;
 namespace ECommerce_web.Areas.Admin.Controllers
 {
     [Area("Admin")]
-	[Authorize]
+	[Route("Admin/Brand")]
+	[Authorize(Roles = "Admin,Author")]
 	public class BrandController : Controller
     {
 

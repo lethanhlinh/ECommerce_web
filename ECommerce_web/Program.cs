@@ -1,3 +1,4 @@
+﻿using ECommerce_web.Areas.Admin.Repository;
 using ECommerce_web.Models;
 using ECommerce_web.Repository;
 using Microsoft.AspNetCore.Identity;
@@ -16,7 +17,10 @@ internal class Program
         {
             options.UseSqlServer(builder.Configuration["ConnectionStrings:ConnectedDb"]);
         });
-
+        
+        //Add Email Sender
+        builder.Services.AddTransient<IEmailSender, EmailSender>();
+       
         // Add services to the container.
         builder.Services.AddControllersWithViews();
 
@@ -30,6 +34,8 @@ internal class Program
 
         builder.Services.AddIdentity<AppUserModel,IdentityRole>()
         .AddEntityFrameworkStores<DataContext>().AddDefaultTokenProviders();
+
+        builder.Services.AddRazorPages();
 
         builder.Services.Configure<IdentityOptions>(options =>
         {
@@ -55,9 +61,14 @@ internal class Program
         }
 
         app.UseRouting();
+
         app.UseStaticFiles();
-        app.UseAuthentication();
-        app.UseAuthorization();
+
+        app.UseAuthentication(); //Đăng nhập trước
+
+        app.UseAuthorization(); //Kiểm tra quyền sau
+
+   
 
         app.MapControllerRoute(
             name: "Areas",

@@ -7,6 +7,8 @@
 	<meta name="author" content="">
 	<title> @ViewData["title"] = Admin Area </title>
 	<link href="~/css/bootstrap.min.css" rel="stylesheet">
+		<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.0.1/css/font-awesome.css" rel="stylesheet">
+		<link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.14.5/dist/sweetalert2.min.css" rel="stylesheet">
 	<link href="~/css/font-awesome.min.css" rel="stylesheet">
 	<link href="~/css/prettyPhoto.css" rel="stylesheet">
 	<link href="~/css/price-range.css" rel="stylesheet">
@@ -70,12 +72,12 @@
 						<div class="mainmenu pull-left">
 							<ul class="nav navbar-nav collapse navbar-collapse">
 								<li><a asp-controller="Home" class="active" >Home</a></li>
-								<li><a asp-controller="Product">Products</a></li>
-								<li><a asp-controller="Category">Categories</a></li>
-								<li><a asp-controller="Brand">Brands</a></li>
-								<li><a asp-controller="Order" asp-action="Index">Orders</a></li>
-								<li><a asp-controller="Role">Roles</a></li>
-								<li><a asp-controller="User">Users</a></li>
+								<li><a asp-controller="Product"> Manage Products</a></li>
+								<li><a asp-controller="Category">Manage Categories</a></li>
+								<li><a asp-controller="Brand"> Manage Brands</a></li>
+								<li><a asp-controller="Order" asp-action="Index">Manage Orders</a></li>
+								<li><a asp-controller="Role">Manage Roles</a></li>
+								<li><a asp-controller="User">Manage Users</a></li>
 							</ul>
 						</div>
 					</div>
@@ -112,6 +114,15 @@
 	<script src="~/js/jquery.prettyPhoto.js"></script>
 	<script src="~/js/main.js"></script>
 	<script src="~/backend/js/site.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.14.5/dist/sweetalert2.all.min.js"></script>
+
+	<script>
+		$(function (){
+			var message = '@TempData["success"]';
+			if (message != '')
+			Swal.fire(message);
+		});
+	</script>
 	@await RenderSectionAsync("Scripts", required:false)
 </body>
 </html>

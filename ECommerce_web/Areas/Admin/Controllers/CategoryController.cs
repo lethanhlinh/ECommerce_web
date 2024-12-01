@@ -16,11 +16,40 @@ namespace ECommerce_web.Areas.Admin.Controllers
 		public CategoryController(DataContext dataContext) { 
 			_dataContext = dataContext;
 		}
-		public async Task<IActionResult> Index()
-		{
-			return View(await _dataContext.Categories.OrderByDescending(c => c.Id).ToListAsync());
-		}
-		[HttpGet]
+        //public async Task<IActionResult> Index()
+        //{
+        //	return View(await _dataContext.Categories.OrderByDescending(c => c.Id).ToListAsync());
+        //}
+
+        //Phân trang
+    //    [Route("Index")]
+        public async Task<IActionResult> Index(int pg = 1)
+        {
+            List<CategoryModel> category = _dataContext.Categories.ToList(); //33 datas
+
+
+            const int pageSize = 10; //10 items/trang
+
+            if (pg < 1) //page < 1;
+            {
+                pg = 1; //page ==1
+            }
+            int recsCount = category.Count(); //33 items;đếm
+
+            var pager = new Paginate(recsCount, pg, pageSize);
+
+            int recSkip = (pg - 1) * pageSize; //(3 - 1) * 10; 
+
+            //category.Skip(20).Take(10).ToList()
+
+            var data = category.Skip(recSkip).Take(pager.PageSize).ToList();
+
+            ViewBag.Pager = pager;
+
+            return View(data);
+        }
+
+        [HttpGet]
 		public IActionResult Create()
 		{
 			return View();
