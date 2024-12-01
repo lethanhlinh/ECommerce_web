@@ -50,64 +50,57 @@ namespace ECommerce_web.Areas.Admin.Controllers
 			return View(new AppUserModel());
 		}
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        [Route("Create")]
-        public async Task<IActionResult> Create(AppUserModel user)
-        {
-            if (ModelState.IsValid)
-            {
-                var createUserResult = await _userManager.CreateAsync(user, user.PasswordHash); //tạo User
-                if (createUserResult.Succeeded)
-                {
-                    var createUser = await _userManager.FindByEmailAsync(user.Email); //tìm user dựa vào Email
-                    var userId = createUser.Id; //Lấy userId
-                    var role = _roleManager.FindByIdAsync(user.RoleId); //Lấy RoleId
-                    //gán quyền
-                    var addToRoleResult = await _userManager.AddToRoleAsync(createUser, role.Result.Name);
+		[HttpPost]
+		[ValidateAntiForgeryToken]
+		[Route("Create")]
+		public async Task<IActionResult> Create(AppUserModel user)
+		{
+			if (ModelState.IsValid)
+			{
+				var createUserResult = await _userManager.CreateAsync(user, user.PasswordHash);
+				if (createUserResult.Succeeded)
+				{
+					var createUser = await _userManager.FindByEmailAsync(user.Email);
+					var userId = createUser.Id;
+					var role = await _roleManager.FindByIdAsync(user.RoleId);
+					var addToRoleResult = await _userManager.AddToRoleAsync(createUser, role.Name);
 
-                    if (!addToRoleResult.Succeeded) //Nếu add Role ko thành công
-                    {
-                        foreach (var error in createUserResult.Errors)
-                        {
-                            ModelState.AddModelError(string.Empty, error.Description);
-                        }
-                    }
-                    return RedirectToAction("Index", "User");
-                }
-                else
-                {
-                    foreach (var error in createUserResult.Errors)
-                    {
-                        ModelState.AddModelError(string.Empty, error.Description);
-                    }
-                    return View(user);
-                }
-            }
-            else
-            {
-                TempData["error"] = "Model có một vài thứ đang bị lỗi!!!";
-                List<string> errors = new List<string>();
-                foreach (var value in ModelState.Values)
-                {
-                    foreach (var error in value.Errors)
-                    {
-                        errors.Add(error.ErrorMessage);
-                    }
-                }
-                string errorMessage = string.Join("\n", errors);
-                return BadRequest(errorMessage);
-            }
-            var roles = await _roleManager.Roles.ToListAsync();
-            ViewBag.Roles = new SelectList(roles, "Id", "Name");
+					if (!addToRoleResult.Succeeded)
+					{
+						foreach (var error in addToRoleResult.Errors) // Đổi từ createUserResult.Errors thành addToRoleResult.Errors
+						{
+							ModelState.AddModelError(string.Empty, error.Description);
+						}
+					}
+					return RedirectToAction("Index", "User");
+				}
+				else
+				{
+					// Nạp lại danh sách Role khi có lỗi
+					var roles = await _roleManager.Roles.ToListAsync();
+					ViewBag.Roles = new SelectList(roles, "Id", "Name");
 
-            return View(user);
-        }
+					// Hiển thị lỗi cho người dùng
+					foreach (var error in createUserResult.Errors)
+					{
+						ModelState.AddModelError(string.Empty, error.Description);
+					}
+					return View(user);
+				}
+			}
+			else
+			{
+				// Nạp lại danh sách Role nếu ModelState không hợp lệ
+				var roles = await _roleManager.Roles.ToListAsync();
+				ViewBag.Roles = new SelectList(roles, "Id", "Name");
+
+				TempData["error"] = "Model có một vài thứ đang bị lỗi!!!";
+				return View(user);
+			}
+		}
 
 
-
-
-        [HttpGet]
+		[HttpGet]
         [Route("Delete")]
         public async Task<IActionResult> Delete(string id)
         {
@@ -128,9 +121,6 @@ namespace ECommerce_web.Areas.Admin.Controllers
                   TempData["success"] = "Đã xóa user thành công!!!";
                   return RedirectToAction("Index");
         }
-
-
-
 
 		[HttpGet]
 		[Route("Edit")]

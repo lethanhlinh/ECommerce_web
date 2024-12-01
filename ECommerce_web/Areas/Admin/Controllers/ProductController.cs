@@ -8,7 +8,8 @@ using Microsoft.EntityFrameworkCore;
 namespace ECommerce_web.Areas.Admin.Controllers
 {
     [Area("Admin")]
-	[Authorize(Roles ="Admin")]
+	//[Route("Admin/Product")]
+	//[Authorize(Roles ="Admin")]
 	public class ProductController : Controller
     {
         private readonly DataContext _dataContext;
@@ -18,19 +19,22 @@ namespace ECommerce_web.Areas.Admin.Controllers
             _dataContext = context;
             _iwebHostEnviroment = webHostEnvironment;
         }
+		//[Route("Index")]
         public async Task<IActionResult> Index()
         {
             return View(await _dataContext.Products.OrderByDescending(p => p.Id).Include(p => p.Category).Include(p => p.Brand).ToListAsync());
         }
         [HttpGet]
-        public IActionResult Create()
+		//[Route("Create")]
+		public IActionResult Create()
         {
             ViewBag.Categories = new SelectList(_dataContext.Categories, "Id", "Name");
             ViewBag.Brands = new SelectList(_dataContext.Brands, "Id", "Name");
             return View();
         }
         [HttpPost]
-        [ValidateAntiForgeryToken]
+		//[Route("Create")]
+		[ValidateAntiForgeryToken]
 		public async Task<IActionResult> Create(ProductModel product)
 		{
 			ViewBag.Categories = new SelectList(_dataContext.Categories, "Id", "Name", product.CategoryId);
@@ -81,6 +85,7 @@ namespace ECommerce_web.Areas.Admin.Controllers
             return View(product);
 		}
 		[HttpGet]
+		//[Route("Edit")]
         public async Task<IActionResult> Edit(long Id)
         {
             ProductModel product = await _dataContext.Products.FindAsync(Id);
@@ -164,8 +169,8 @@ namespace ECommerce_web.Areas.Admin.Controllers
 			TempData["error"] = "Thông tin sản phẩm không hợp lệ!";
 			return View(product);
 		}
-
-		public async Task<IActionResult> Delete(int Id)
+		//[Route("Delete")]
+		public async Task<IActionResult> Delete(long Id)
         {
             ProductModel product = await _dataContext.Products.FindAsync(Id);
 
@@ -187,7 +192,7 @@ namespace ECommerce_web.Areas.Admin.Controllers
                 }
             }
             _dataContext.Remove(product);
-            await _dataContext.SaveChangesAsync();
+            //await _dataContext.SaveChangesAsync();
             TempData["error"] = "Sản phẩm đã được xóa!!!";
             return RedirectToAction("Index");
         }

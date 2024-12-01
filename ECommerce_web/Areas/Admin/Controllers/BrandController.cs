@@ -7,8 +7,8 @@ using Microsoft.EntityFrameworkCore;
 namespace ECommerce_web.Areas.Admin.Controllers
 {
     [Area("Admin")]
-	[Route("Admin/Brand")]
-	[Authorize(Roles = "Admin,Author")]
+	//[Route("Admin/Brand")]
+	//[Authorize(Roles = "Admin,Author")]
 	public class BrandController : Controller
     {
 
@@ -17,20 +17,20 @@ namespace ECommerce_web.Areas.Admin.Controllers
         {
             _dataContext = dataContext;
         }
-	
-	
+		//[Route("Index")]
         public async Task<IActionResult> Index()
         {
             return View(await _dataContext.Brands.OrderByDescending(c => c.Id).ToListAsync());
         }
-
-		public async Task<IActionResult> Create()
+        //[Route("Create")]
+        public async Task<IActionResult> Create()
         {
             return View();
         }
 
 		[HttpPost]
-		[ValidateAntiForgeryToken]
+        //[Route("Create")]
+        [ValidateAntiForgeryToken]
 		public async Task<IActionResult> Create(BrandModel brand)
 		{
 
@@ -67,21 +67,22 @@ namespace ECommerce_web.Areas.Admin.Controllers
 
 			return View(brand);
 		}
-
-		public async Task<IActionResult> Delete(int Id)
+        //[Route("Delete")]
+        public async Task<IActionResult> Delete(int Id)
 		{
 			BrandModel brand = await _dataContext.Brands.FindAsync(Id);
 
 
 			_dataContext.Brands.Remove(brand);
-			await _dataContext.SaveChangesAsync();
-			TempData["success"] = "Thywowng hiệu đã được xóa!!!";
+			//await _dataContext.SaveChangesAsync();
+			TempData["success"] = "Thương hiệu đã được xóa!!!";
 			return RedirectToAction("Index");
 		}
 
 		//Edit danh mục
 		[HttpGet]
-		public async Task<IActionResult> Edit(int Id)
+        //[Route("Edit")]
+        public async Task<IActionResult> Edit(int Id)
 		{
 			BrandModel brand = await _dataContext.Brands.FindAsync(Id);
 			return View(brand);
@@ -89,7 +90,8 @@ namespace ECommerce_web.Areas.Admin.Controllers
 
 
 		[HttpPost]
-		[ValidateAntiForgeryToken]
+        //[Route("Edit")]
+        [ValidateAntiForgeryToken]
 		public async Task<IActionResult> Edit(BrandModel brand)
 		{
 
@@ -127,7 +129,7 @@ namespace ECommerce_web.Areas.Admin.Controllers
                 _dataContext.Update(brand);
 				await _dataContext.SaveChangesAsync();
 				TempData["success"] = "Cập nhật thương hiệu thành công!!!";
-				return RedirectToAction("Index");
+				return RedirectToAction("Index","Brand");
 			}
 			else
 			{

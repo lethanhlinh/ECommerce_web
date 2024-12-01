@@ -9,7 +9,8 @@ using Microsoft.EntityFrameworkCore;
 namespace ECommerce_web.Areas.Admin.Controllers
 {
 	[Area("Admin")]
-	[Authorize]
+	//[Route("Admin/Category")]
+	//[Authorize("Admin, Author")]
 	public class CategoryController : Controller 
 	{
 		private readonly DataContext _dataContext;
@@ -50,11 +51,13 @@ namespace ECommerce_web.Areas.Admin.Controllers
         }
 
         [HttpGet]
+		//[Route("Create")]
 		public IActionResult Create()
 		{
 			return View();
 		}
 		[HttpPost]
+		//[Route("Create")]
 		[ValidateAntiForgeryToken]
 		public async Task<IActionResult> Create(CategoryModel category)
 		{
@@ -95,6 +98,7 @@ namespace ECommerce_web.Areas.Admin.Controllers
 
 		//Edit danh mục
 		[HttpGet]
+		//[Route("Edit")]
 		public async Task<IActionResult> Edit(int Id)
 		{
 			CategoryModel category = await _dataContext.Categories.FindAsync(Id);
@@ -159,6 +163,7 @@ namespace ECommerce_web.Areas.Admin.Controllers
 			return View(category);
 		}
 
+		//[Route("Delete")]
 		public async Task<IActionResult> Delete(int Id)
 		{
 			CategoryModel category = await _dataContext.Categories.FindAsync(Id);
