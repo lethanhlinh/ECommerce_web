@@ -1,7 +1,11 @@
 ﻿@model IEnumerable<OrderDetails>
 @{
     ViewData["title"] = "Order Details";
+    decimal total = 0;
+    decimal sutotal = 0;
+
 }
+<html>
 <h3>List Order</h3>
 
 <table class="table">
@@ -17,13 +21,58 @@
     <tbody>
         @foreach (var item in Model)
         {
+            sutotal = item.Quantity * item.Price;// số lượng * giá 
+            total += sutotal;
             <tr>
+                <input type="hidden" asp-for="@item.OrderCode" class="getId"/>
                 <th>#</th>
                 <th scope="row">@item.OrderCode</th>
                 <td>@item.UserName</td>
                 <td>@item.Quantity</td>
                 <td>@item.ProductId</td>
+                <td> @sutotal.ToString("C")</td>
             </tr>
         }
+        <tr>
+            <th colspan="5">Total :</th>
+            <td>@total.ToString("C")</td>
+            <td><select  class="form-control select-update-order">
+
+                <option value="1">Đơn hàng mới</option>
+                   <option value="0">Đã xử lý</option>
+
+            </select></td>
+        </tr>
     </tbody>
 </table>
+</html>
+@section Scripts{
+    <script>
+        $(document).ready(function() {
+            $(' .select-update-order').change(function () {
+                var status = $(this).val();
+                var ordercode = $('.getId').val();
+               // alert(status);
+                   //    alert(ordercode);
+                $.ajax({
+                    type: "POST",
+                   url: "@Url.Action("UpdateOrder")",
+                   data: {status: status, ordercode: ordercode},
+
+                   success: function (result){
+                       if (result.success){
+                          // console.log("Update successful");
+                           Swal.fire("Cập nhật đơn hàng thành công");
+                       }
+                       else{
+                            Swal.fire("Cập nhật đơn hàng thất bại"+ result.message);
+                           //console.log("Update failed :" + result.message);
+                       }
+                   },
+                   //error: function(req, status,error){
+                   //console.error("Error updating order: ",error);}
+            });
+        });
+        });
+    </script>
+}
