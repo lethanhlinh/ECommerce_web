@@ -6,16 +6,18 @@
 
 }
 <html>
-<h3>List Order</h3>
+<h3>Order Details</h3>
 
-<table class="table">
+<table class="table" id="detail_order">
     <thead>
         <tr>
-            <th scope="col">#</th>
+            <th scope="col">Id</th>
             <th scope="col"> Order Code</th>
             <th scope="col">UserName</th>
+            <th scope="col">Product Name</th>
+            <th scope="col">Product Price</th>
             <th scope="col">Quantity</th>
-            <th scope="col">ProductId</th>
+            <th scope="col">Subtotal</th>
         </tr>
     </thead>
     <tbody>
@@ -34,6 +36,7 @@
             </tr>
         }
         <tr>
+
             <th colspan="5">Total :</th>
             <td>@total.ToString("C")</td>
             <td><select  class="form-control select-update-order">
@@ -41,12 +44,22 @@
                 <option value="1">Đơn hàng mới</option>
                    <option value="0">Đã xử lý</option>
 
-            </select></td>
+            </select>
+            </td>
         </tr>
     </tbody>
 </table>
 </html>
 @section Scripts{
+    <script>
+                new DataTable('#detail_order', {
+            layout: {
+                topStart: {
+                    buttons: ['pdf','print']
+                }
+            }
+        });
+    </script>
     <script>
         $(document).ready(function() {
             $(' .select-update-order').change(function () {
