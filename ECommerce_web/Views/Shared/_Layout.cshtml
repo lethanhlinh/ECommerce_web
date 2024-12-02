@@ -390,16 +390,7 @@
 	<script src="https://cdn.datatables.net/buttons/3.2.0/js/buttons.html5.min.js"></script>
 	<script src="https://cdn.datatables.net/buttons/3.2.0/js/buttons.print.min.js"></script>
 
-	<script>
-
-			let table = new DataTable('#myTable', {
-					layout: {
-						topStart: {
-							buttons: ['copy', 'csv', 'excel', 'pdf', 'print']
-						}
-					}
-					});
-	</script>
+	
 	@await RenderSectionAsync("Scripts", required:false)
 </body>
 </html>

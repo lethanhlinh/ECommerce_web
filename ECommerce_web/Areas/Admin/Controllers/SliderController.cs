@@ -22,7 +22,7 @@ namespace ECommerce_web.Areas.Admin.Controllers
             _iwebHostEnviroment = webHostEnvironment;
         }
 
-		[Route("Index")]
+	//	[Route("Index")]
 		public async Task<IActionResult> Index()
 		{
             return View(await _dataContext.Sliders.OrderByDescending(c => c.Id).ToListAsync());
