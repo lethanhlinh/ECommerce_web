@@ -9,7 +9,7 @@
 			<!--product-details-->
 			<div class="col-sm-5">
 				<div class="view-product">
-					<img src="~/images/@Model.ProductDetails.Image" alt="@Model.ProductDetails.Name" />
+					<img src="~/images/@Model.ProductDetails.Image" alt="@Model.ProductDetails.Name" style="width: 350px; height: 300px;"/>
 					<h3>ZOOM</h3>
 				</div>
 				<div id="similar-product" class="carousel slide" data-ride="carousel">
@@ -44,7 +44,6 @@
 						<label>Quantity: </label>
 						<input type="text" value="1" />
 						<button type="button" class="btn btn-fefault cart">
-							<i class="fa fa-shopping-cart"></i>
 							<a class="btn btn-default add-to-cart" asp-action="Add" asp-controller="Cart" asp-route-Id="@Model.ProductDetails.Id"><i class="fa fa-shopping-cart"></i>Add to cart</a>
 						</button>
 					</span>

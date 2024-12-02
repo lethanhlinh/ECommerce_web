@@ -30,9 +30,10 @@ namespace ECommerce_web.Controllers
         {
             return View();
         }
-        public IActionResult Contact()
+        public async Task<IActionResult> Contact()
         {
-            return View();
+            var contact = await _dataContext.Contact.FirstAsync();
+            return View(contact);
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

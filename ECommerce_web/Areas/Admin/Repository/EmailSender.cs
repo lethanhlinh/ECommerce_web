@@ -11,11 +11,11 @@ namespace ECommerce_web.Areas.Admin.Repository
             {
                 EnableSsl = true, //bật bảo mật
                 UseDefaultCredentials = false,
-                Credentials = new NetworkCredential("tragiang080404@gmail.com", "gnnsfstcnacadzgf") //Để theo mail của mình, đặt mật khẩu ứng dụng
+                Credentials = new NetworkCredential("duyvietnguyen0805@gmail.com", "gnnsfstcnacadzgf") //Để theo mail của mình, đặt mật khẩu ứng dụng
             };
 
             return client.SendMailAsync(
-                new MailMessage(from: "tragiang080404@gmail.com",
+                new MailMessage(from: "duyvietnguyen0805@gmail.com",
                                 to: email,
                                 subject,
                                 message

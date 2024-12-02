@@ -1,6 +1,14 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-}
-<h4>Thông tin liên hệ</h4>
+﻿@model ContactModel
+<div class="row">
+    <div class="col-sm-4">
+        @Html.Raw(Model.Map)
+        @Html.Raw(Model.Description)
+    </div>
+    <div class="col-sm-4">
+        <div class="address">
+            <h5><b>Name: @Html.Raw(Model.Name)</b></h5>
+            <h5>Email: @Html.Raw(Model.Email)</h5>
+            <h5>Phone: @Html.Raw(Model.Phone)</h5>
+        </div>
+    </div>
+</div>
