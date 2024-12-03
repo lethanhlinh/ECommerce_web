@@ -22,5 +22,6 @@ namespace ECommerce_web.Repository
 
 		public DbSet<WishlistModel> Wishlists { get; set; }
 		public DbSet<CompareModel> Compares { get; set; }
-	}
+        public DbSet<ProductQuantityModel> ProductQuantities { get; set; }
+    }
 }

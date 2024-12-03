@@ -10,6 +10,7 @@
 	<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.0.1/css/font-awesome.css" rel="stylesheet" >
 	<link href= "//cdn.datatables.net/2.1.8/css/dataTables.dataTables.min.css" rel="stylesheet">
 	<link href="https://cdn.datatables.net/buttons/3.2.0/css/buttons.dataTables.css" rel="stylesheet">
+	<link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.14.5/dist/sweetalert2.min.css" rel="stylesheet">
 	<link href="~/css/prettyPhoto.css" rel="stylesheet">
 	<link href="~/css/price-range.css" rel="stylesheet">
 	<link href="~/css/animate.css" rel="stylesheet">
@@ -94,10 +95,12 @@
 								<li><a asp-controller="Cart" asp-action="Index"><i class="fa fa-shopping-cart"></i> Cart</a></li>
 								@if(User.Identity? .IsAuthenticated ?? false)
 								{
+									<li><a asp-controller="Cart" asp-action="Index"><i class="fa fa-crosshairs"></i>Checkout</a></li>
 									<li><a href="#"><i class="fa fa-user"></i> Account</a></li>
-									<li><a href="#"><i class="fa fa-star"></i> Wishlist</a></li>
-									<li><a href="#"><i class="fa fa-star"></i> Compare</a></li>
-									<li><a asp-controller="Cart" asp-action="Checkout"><i class="fa fa-credit-card"></i> Checkout</a></li>
+									
+									<li><a asp-controller="Home" asp-action="Wishlist"><i class="fa fa-heart"></i> Wishlist</a></li>
+									<li><a asp-controller="Home" asp-action="Compare"><i class="fa fa-star"></i>Compare</a></li>
+									<li><a asp-controller="Product" asp-action="Index" asp-area="Admin"><i class="fa fa-lock"></i> Admin</a></li>
 									<li><a asp-controller="Account" asp-action="Logout"><i class="fa fa-sign-out"></i>Hi, @User.Identity.Name Logout</a></li>
 								}
 								else
@@ -265,7 +268,7 @@
 	<script src="~/js/jquery.prettyPhoto.js"></script>
 	<script src="//cdn.datatables.net/2.1.8/js/dataTables.min.js"></script>
 	<script src="~/js/main.js"></script>
-
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.14.5/dist/sweetalert2.all.min.js"></script>
 	<script src="https://cdn.datatables.net/buttons/3.2.0/js/dataTables.buttons.js"></script>
 	<script src="https://cdn.datatables.net/buttons/3.2.0/js/buttons.dataTables.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>

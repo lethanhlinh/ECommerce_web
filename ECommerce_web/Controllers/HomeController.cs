@@ -1,4 +1,4 @@
-using ECommerce_web.Models;
+﻿using ECommerce_web.Models;
 using ECommerce_web.Repository;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -28,8 +28,51 @@ namespace ECommerce_web.Controllers
             return View(products);
         }
 
-		
-		public async Task< IActionResult> AddWishList(long Id, WishlistModel wishlistmodel)
+		//Hàm compare
+        public async Task <IActionResult> Compare()
+        {
+            var compare_product = await (from c in _dataContext.Compares
+                                          join p in _dataContext.Products on c.ProductId equals p.Id
+                                          join u in _dataContext.Users on c.UserId equals u.Id
+                                          select new { User = u, Product = p, Compares = c }).ToListAsync();
+            return View(compare_product);
+        }
+
+        //Xóa Compare
+        public async Task<IActionResult> DeleteCompare(int Id)
+        {
+            CompareModel compare = await _dataContext.Compares.FindAsync(Id);
+
+
+            _dataContext.Compares.Remove(compare);
+            await _dataContext.SaveChangesAsync();
+            TempData["success"] = "Sản phẩm đã được xóa khỏi mục so sánh!!!";
+            return RedirectToAction("Compare", "Home");
+        }
+        //Hàm wishlist
+        public async Task<IActionResult> Wishlist()
+        {
+            var wishlist_product = await (from w in _dataContext.Wishlists
+                                          join p in _dataContext.Products on w.ProductId equals p.Id
+                                          join u in _dataContext.Users on w.UserId equals u.Id 
+                                          select new { User = u, Product = p, Wishlist = p }).ToListAsync();
+            return View(wishlist_product);
+        }
+
+        //Hàm xóa wishlist
+        public async Task<IActionResult> DeleteWishlist(int Id)
+        {
+            WishlistModel wishlist = await _dataContext.Wishlists.FindAsync(Id);
+
+
+            _dataContext.Wishlists.Remove(wishlist);
+            await _dataContext.SaveChangesAsync();
+            TempData["success"] = "Sản phẩm đã được xóa khỏi mục yêu thích!!!";
+            return RedirectToAction("Wishlist", "Home");
+        }
+
+
+        public async Task< IActionResult> AddWishlist(long Id, WishlistModel wishlistmodel)
 		{
 			var user =await _userManager.GetUserAsync(User);
 
@@ -38,7 +81,7 @@ namespace ECommerce_web.Controllers
                 ProductId = Id,
                 UserId = user.Id,
             };
-
+            
             _dataContext.Wishlists.Add(wishlistProduct);
             try
             {

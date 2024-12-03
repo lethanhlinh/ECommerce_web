@@ -196,5 +196,39 @@ namespace ECommerce_web.Areas.Admin.Controllers
             TempData["error"] = "Sản phẩm đã được xóa!!!";
             return RedirectToAction("Index");
         }
+
+        //Add more Quantity to products
+		
+		[Route("AddQuantity")]
+		[HttpGet]
+        public async Task<IActionResult> AddQuantity(int Id)
+        {
+			ViewBag.Id = Id;
+            return View();
+        }
+
+		[Route("StoreProductQuantity")]
+		[HttpPost]
+		[ValidateAntiForgeryToken]
+		public IActionResult StoreProductQuantity(ProductQuantityModel productQuantityModel)
+		{
+			//Get the product to update
+			var product = _dataContext.Products.Find(productQuantityModel.ProductId); //Tìm sp dựa theo product ID
+
+			if(product == null)
+			{
+				return NotFound();
+			}
+			product.Quantity = productQuantityModel.Quantity;
+
+			productQuantityModel.Quantity = productQuantityModel.Quantity; //Cộng dồn số lượng
+			productQuantityModel.ProductId = productQuantityModel.ProductId; 
+			productQuantityModel.DateCreated = DateTime.Now;
+
+			_dataContext.Add(productQuantityModel);
+			_dataContext.SaveChangesAsync();
+			TempData["success"] = "Thêm số lượng sản phẩm thành công";
+			return RedirectToAction("AddQuantity", "Product", new { Id = productQuantityModel.ProductId });
+		}
     }
 }
