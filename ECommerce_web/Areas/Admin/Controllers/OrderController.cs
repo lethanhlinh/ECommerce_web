@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.SqlServer;
 
 namespace ECommerce_web.Areas.Admin.Controllers
 {
@@ -20,13 +21,21 @@ namespace ECommerce_web.Areas.Admin.Controllers
 		{
 			return View(await _dataContext.Orders.OrderByDescending(c => c.Id).ToListAsync());
 		}
+
+
+        [HttpGet]
+        [Route("ViewOrder")]
 		public async Task<IActionResult> ViewOrder(string ordercode)
 		{
-			var DetailsOrder = await _dataContext.OrderDetails.Include(od => od.Product).Where(od => od.OrderCode == ordercode).ToListAsync();
+			var DetailsOrder = await _dataContext.OrderDetails.Include(od=> od.Product)
+				.Where(od => od.OrderCode==ordercode).ToListAsync();
+			var ShippingCost = _dataContext.Orders.Where( o => o.OrderCode == ordercode).First();
+			ViewBag.ShippingCost= ShippingCost.ShippingCost;
 			return View(DetailsOrder);
 		}
 
-		[HttpPost]
+
+        [HttpPost]
 		[Route("UpdateOrder")]
         public async Task<ActionResult> UpdateOrder(string ordercode, int status)
 		{

@@ -4,6 +4,7 @@ using ECommerce_web.Models.ViewModels;
 using ECommerce_web.Repository;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using System.Security.Claims;
 
 namespace ECommerce_web.Controllers
@@ -30,7 +31,21 @@ namespace ECommerce_web.Controllers
                 var ordercode = Guid.NewGuid().ToString();
                 var orderItem = new OrderModel();
                 orderItem.UserName = userEmail;
-                orderItem.OrderCode = ordercode;
+
+
+				//Nhận shippingPrice từ cookie
+				var shippingPriceCookie = Request.Cookies["ShippingPrice"];
+
+				decimal shippingPrice = 0;
+
+				if (shippingPriceCookie != null)
+				{
+					var shippingPriceJson = shippingPriceCookie;
+					shippingPrice = JsonConvert.DeserializeObject<decimal>(shippingPriceJson);
+				}
+
+				orderItem.ShippingCost = shippingPrice;
+				orderItem.OrderCode = ordercode;
                 orderItem.Status = 1;
                 orderItem.CreateDate = DateTime.Now;
 
