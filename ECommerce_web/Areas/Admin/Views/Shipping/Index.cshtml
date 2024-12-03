@@ -9,7 +9,7 @@
 </style>
 <h4>Create Shipping</h4>
 <div class="col-md-9">
-	<form asp-action="Create" enctype="multipart/form-data">
+	
 		<div asp-validation-summary="ModelOnly" class="text-danger"></div>
 		<div class="form-group">
 			<label>Chọn</label>
@@ -22,16 +22,47 @@
 			<select class="css_select" id="quan" name="quan" title="Chọn Quận Huyện">
 				<option value="0">Quận Huyện</option>
 			</select>
-			<div class="form-group">
-			<label>Chọn</label>
-				<select class="css_select" id="phuong" name="phuong" title="Chọn Phường Xã">
-					<option value="0">Phường Xã</option>
-				</select>
-		</div>
+        </div>
 		<div class="form-group">
-			<button class="btn btn-primary">Create</button>
+		<label>Chọn</label>
+			<select class="css_select" id="phuong" name="phuong" title="Chọn Phường Xã">
+				<option value="0">Phường Xã</option>
+			</select>
 		</div>
-	</form>
+        <div class="form-group">
+            <label>Giá</label>
+            <input asp-for="Price" id="price-shipping" class="form-control" />
+        </div>
+		<div class="form-group">
+        <button type="button" class="btn btn-primary btn-add-shipping">Create</button>
+		</div>
+
+    <h2>Shipping List</h2>
+    <table class="table table-striped" id="myTable">
+        <thead>
+            <tr>
+                <th>City</th>
+                <th>District</th>
+                <th>Ward</th>
+                <th>Price</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var shipping in ViewBag.Shippings)
+            {
+                <tr>
+                    <td>@shipping.City</td>
+                    <td>@shipping.District</td>
+                    <td>@shipping.Ward</td>
+                    <td>@shipping.Price.ToString("#, ##0 VNĐ")</td>
+                    <td>
+                        <a onclick="return confirm('Bạn có chắc muốn xóa shipping này?')" href="@Url.Action("Delete", "Shipping", new {id = shipping.Id})" class="btn btn-danger">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
 	<a asp-action="Index" asp-controller="Shipping">Back to List Shipping</a>
 </div>
 @section Scripts {
@@ -39,6 +70,33 @@
 		await Html.RenderPartialAsync("_ValidationScriptsPartial");
 	}
     <script>
+        $(".btn-add-shipping").click(function () {
+            var tinh = $("#tinh").find('option:selected').text();
+            var quan = $("#quan").find('option:selected').text();
+            var phuong = $("#phuong").find('option:selected').text();
+            var price = $("#price-shipping").val();
+
+            if (tinh === '' || quan === '' || phuong === '' || price === '') {
+                Swal.fire("Làm ơn đừng bỏ trống hoặc chọn giá trị phù hợp!!!");
+            } else {
+                $.ajax({
+                    type: "POST",
+                    url: "@Url.Action("StoreShipping", "Shipping")",
+                    data: { tinh: tinh, quan: quan, phuong: phuong, price: price }, // Gửi dữ liệu đến server
+                    success: function (result) {
+                        if (result.success) {
+                            Swal.fire("Thêm vận chuyển thành công. Load lại page để thấy Data.");
+                        } else if (result.duplicate) {
+                            Swal.fire("Dữ liệu trùng lặp!!!");
+                        }
+                    },
+                    error: function () {
+                        Swal.fire("Đã xảy ra lỗi! Vui lòng thử lại sau.");
+                    }
+                });
+            }
+        });
+
         $(document).ready(function() {
             //Lấy tỉnh thành
             $.getJSON('https://esgoo.net/api-tinhthanh/1/0.htm',function(data_tinh){

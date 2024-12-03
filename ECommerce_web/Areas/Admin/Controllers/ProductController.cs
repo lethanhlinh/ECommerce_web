@@ -193,7 +193,7 @@ namespace ECommerce_web.Areas.Admin.Controllers
             }
             _dataContext.Remove(product);
             //await _dataContext.SaveChangesAsync();
-            TempData["error"] = "Sản phẩm đã được xóa!!!";
+            TempData["success"] = "Sản phẩm đã được xóa!!!";
             return RedirectToAction("Index","Product");
         }
 
@@ -231,7 +231,8 @@ namespace ECommerce_web.Areas.Admin.Controllers
 			_dataContext.Add(productQuantityModel);
 			_dataContext.SaveChangesAsync();
 			TempData["success"] = "Thêm số lượng sản phẩm thành công";
-			return RedirectToAction("AddQuantity", "Product", new { Id = productQuantityModel.ProductId });
+			//return RedirectToAction("AddQuantity", "Product", new { Id = productQuantityModel.ProductId });
+			return RedirectToAction("Index", "Product");//Chuyển hướng về lại trang Index
 		}
     }
 }
