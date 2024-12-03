@@ -30,8 +30,9 @@
                 <th>#</th>
                 <th scope="row">@item.OrderCode</th>
                 <td>@item.UserName</td>
+                <td>@item.Product.Name</td>
+                <td>@item.Price.ToString("C")</td>
                 <td>@item.Quantity</td>
-                <td>@item.ProductId</td>
                 <td> @sutotal.ToString("C")</td>
             </tr>
         }

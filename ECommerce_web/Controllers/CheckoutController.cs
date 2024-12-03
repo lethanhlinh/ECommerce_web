@@ -3,6 +3,7 @@ using ECommerce_web.Models;
 using ECommerce_web.Models.ViewModels;
 using ECommerce_web.Repository;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 
 namespace ECommerce_web.Controllers
@@ -45,7 +46,12 @@ namespace ECommerce_web.Controllers
                     orderdetails.ProductId = cart.ProductId;
                     orderdetails.Price =cart.Price;
                     orderdetails.Quantity =cart.Quantity;
-
+                    //update product quantity
+                    var product = await _dataContext.Products.Where(p => p.Id == cart.ProductId).FirstAsync();
+                    product.Quantity -= cart.Quantity;
+                    product.Sold += cart.Quantity;
+                    _dataContext.Update(product);
+                    //++update product quantity
                     _dataContext.Add(orderdetails);
                     _dataContext.SaveChanges();
                 }

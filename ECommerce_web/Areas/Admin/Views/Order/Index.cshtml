@@ -20,10 +20,9 @@
         {
             <tr>
                 <th>#</th>
-                <th scope="row">@item.OrderCode</th>
+                <th> @item.OrderCode</th>
                 <td>@item.UserName</td>
                 <td>@item.CreateDate</td>
-     
 
                 <td>
                     @if (@item.Status == 1)
@@ -35,6 +34,7 @@
                         <span class="text text-danger">Đơn hàng thành công</span>
                     }
                 </td>
+                <td>@item.CreateDate.ToString("dd/MM/yyyy")</td>
 
                 <td>
                     <a asp-action="ViewOrder" asp-controller="Order" asp-route-ordercode="@item.OrderCode" class="btn btn-warning btn-sm">View Order</a>

@@ -194,7 +194,7 @@ namespace ECommerce_web.Areas.Admin.Controllers
             _dataContext.Remove(product);
             //await _dataContext.SaveChangesAsync();
             TempData["error"] = "Sản phẩm đã được xóa!!!";
-            return RedirectToAction("Index");
+            return RedirectToAction("Index","Product");
         }
 
         //Add more Quantity to products
@@ -203,6 +203,8 @@ namespace ECommerce_web.Areas.Admin.Controllers
 		[HttpGet]
         public async Task<IActionResult> AddQuantity(int Id)
         {
+			var productbyquantity = await _dataContext.ProductQuantities.Where(pq => pq.ProductId == Id).ToListAsync();
+			ViewBag.ProductByQuantity = productbyquantity;
 			ViewBag.Id = Id;
             return View();
         }
@@ -219,11 +221,12 @@ namespace ECommerce_web.Areas.Admin.Controllers
 			{
 				return NotFound();
 			}
-			product.Quantity = productQuantityModel.Quantity;
+			product.Quantity += productQuantityModel.Quantity;
 
 			productQuantityModel.Quantity = productQuantityModel.Quantity; //Cộng dồn số lượng
 			productQuantityModel.ProductId = productQuantityModel.ProductId; 
 			productQuantityModel.DateCreated = DateTime.Now;
+
 
 			_dataContext.Add(productQuantityModel);
 			_dataContext.SaveChangesAsync();

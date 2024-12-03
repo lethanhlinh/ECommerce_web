@@ -21,7 +21,7 @@
 							<a href=""><img src="images/product-details/similar2.jpg" alt=""></a>
 							<a href=""><img src="images/product-details/similar3.jpg" alt=""></a>
 						</div>
-						
+
 
 					</div>
 
@@ -43,9 +43,20 @@
 						<span>@Model.ProductDetails.Price.ToString("#,##0 VND")</span>
 						<label>Quantity: </label>
 						<input type="text" value="1" />
-						<button type="button" class="btn btn-fefault cart">
-							<a class="btn btn-default add-to-cart" asp-action="Add" asp-controller="Cart" asp-route-Id="@Model.ProductDetails.Id"><i class="fa fa-shopping-cart"></i>Add to cart</a>
-						</button>
+						@if (Model.ProductDetails.Quantity > 0)
+						{
+							<button type="button" class="btn btn-fefault cart">
+								<i class="fa fa-shopping-cart"></i>
+								Thêm giỏ hàng
+							</button>
+						}
+						else
+						{
+							<button type="button" class="btn btn-fefault ">
+								<i class="fa fa-shopping-cart"></i>
+								Hết hàng
+							</button>
+						}
 					</span>
 					<p><b>Availability:</b> In Stock</p>
 					<p><b>Condition:</b> New</p>

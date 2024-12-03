@@ -2,6 +2,7 @@
 using ECommerce_web.Models.ViewModels;
 using ECommerce_web.Repository;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Security.Cryptography.X509Certificates;
 
 namespace ECommerce_web.Controllers
@@ -87,21 +88,24 @@ namespace ECommerce_web.Controllers
 		//Ham tang 
 		public async Task<IActionResult> Increase(long Id)
 		{
+			ProductModel product = await _dataContext.Products.Where(p => p.Id == Id).FirstOrDefaultAsync();
 			List<CartItemModel> cart = HttpContext.Session.GetJson<List<CartItemModel>>("Cart");
 
 			CartItemModel cartItem = cart.Where(c => c.ProductId == Id).FirstOrDefault();
 			// lay san pham bang id cua san pham can giam so luong
 
-			if (cartItem.Quantity >= 1)
+			if (cartItem.Quantity >= 1 && product.Quantity > cartItem.Quantity )
 			{
 				++cartItem.Quantity;
-				// tang so luong 
-			}
-			//else
-			//{
-			//	cart.RemoveAll(p => p.ProductId == Id);
+                TempData["success"] = "Increase Product to cart Sucessfully! ";
+                // tang so luong 
+            }
+			else
+			{
+				cartItem.Quantity = product.Quantity;
+				TempData["success"] = "Maxinum Product Quantity to cart Sucessfully! ";
 			//	// xoa luon san pham do
-			//}
+			}
 			if (cart.Count == 0)
 			{
 				HttpContext.Session.Remove("Cart");
