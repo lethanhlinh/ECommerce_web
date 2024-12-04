@@ -22,7 +22,7 @@ namespace ECommerce_web.Migrations
                     DateStart = table.Column<DateTime>(type: "datetime2", nullable: false),
                     DateExpired = table.Column<DateTime>(type: "datetime2", nullable: false),
                    
-                    Quantity = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Quantity = table.Column<int>(type: "int", nullable: false),
                     Status = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>

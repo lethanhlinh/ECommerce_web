@@ -19,7 +19,7 @@ namespace ECommerce_web.Models
 	
 
 		[Required(ErrorMessage = "Yêu cầu nhập số lượng mã giảm giá")]
-		public string Quantity { get; set; }
+		public int Quantity { get; set; }
 
 		public int Status { get; set; }
 	}

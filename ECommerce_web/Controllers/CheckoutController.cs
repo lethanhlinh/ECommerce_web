@@ -35,17 +35,20 @@ namespace ECommerce_web.Controllers
 
 				//Nhận shippingPrice từ cookie
 				var shippingPriceCookie = Request.Cookies["ShippingPrice"];
-
 				decimal shippingPrice = 0;
 
-				if (shippingPriceCookie != null)
+                //Nhận shippingPrice từ cookie
+                var coupon_code = Request.Cookies["CouponTitle"];
+
+                if (shippingPriceCookie != null)
 				{
 					var shippingPriceJson = shippingPriceCookie;
 					shippingPrice = JsonConvert.DeserializeObject<decimal>(shippingPriceJson);
 				}
 
 				orderItem.ShippingCost = shippingPrice;
-				orderItem.OrderCode = ordercode;
+                orderItem.CouponCode = coupon_code;
+                orderItem.OrderCode = ordercode;
                 orderItem.Status = 1;
                 orderItem.CreateDate = DateTime.Now;
 

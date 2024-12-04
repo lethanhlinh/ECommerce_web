@@ -62,7 +62,7 @@
                                
                                 <form>
                                     Coupon Code: <input type="text" class="form-control coupon-value" />
-                                    @*<span class="text text-success">@Model.CouponCode</span> <br /> *@
+                                    <span class="text text-success">@Model.CouponCode</span> <br />
                                     <input type="button" value="Apply" class="btn btn-sm btn-primary btn-apply-coupon" />
                                 </form>
 
@@ -128,6 +128,34 @@
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
+        //Delete shipping cost
+        $(".btn-apply-coupon").click(function(){
+            var coupon_value = $(".coupon-value").val();
+            //alert(coupon_value)
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("GetCoupon", "Cart")",
+                data: { coupon_value : coupon_value },
+                success: function (result) {
+                    if (result.success) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Thành công!',
+                            text: result.message
+                        }).then(() => {
+                            location.reload(); // Reload trang sau khi thành công
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Lỗi!',
+                            text: result.message
+                        });
+                    }
+                }
+            });
+        });
+
         $(document).ready(function () {
             $(".btn-add-shipping").click(function () {
                 var tinh = $("#tinh").find('option:selected').text();

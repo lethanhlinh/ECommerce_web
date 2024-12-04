@@ -8,8 +8,9 @@
     <thead>
         <tr>
             <th scope="col">Id</th>
-            <th scope="col"> Order Code</th>
-            <th scope="col"> Shipping Cost</th>
+            <th scope="col">Order Code</th>
+            <th scope="col">Shipping Cost</th>
+            <th scope="col">Coupon Code</th>
             <th scope="col">UserName</th>           
             <th scope="col">Order Status</th>
             <th scope="col">Created Date</th>
@@ -23,6 +24,7 @@
                 <th>#</th>
                 <th> @item.OrderCode</th>
                 <th> @item.ShippingCost.ToString("#,##0 VND")</th>
+                <th> @item.CouponCode</th>
                 <td>@item.UserName</td>
                 <td>@item.CreateDate</td>
 
