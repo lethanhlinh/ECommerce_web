@@ -6,5 +6,6 @@ namespace ECommerce_web.Models
     {
         public string Occupayion {  get; set; }
         public string RoleId { get; set; }
-    }
+		public string Token { get; set; }
+	}
 }

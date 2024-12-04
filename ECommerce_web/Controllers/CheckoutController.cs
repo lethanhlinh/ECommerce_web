@@ -82,7 +82,7 @@ namespace ECommerce_web.Controllers
                 await _emailSender.SendEmailAsync(receiver, subject, message);
 
                 TempData["success"] = "Đơn hàng đã được tạo thành công, vui lòng chờ duyệt đơn hàng";
-                return RedirectToAction("Index", "Cart");
+                return RedirectToAction("History", "Account");
             }
             return View();
         }
