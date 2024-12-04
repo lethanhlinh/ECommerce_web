@@ -58,8 +58,15 @@
                         }
                         <tr>
                             <td rowspan="5">
-                                Grand Total: <p class="cart_total_price">@Model.GrandTotal.ToString()</p> 
-                                ShippingPrice: <p class="cart_total_price">@Model.ShippingCost.ToString()</p>
+                                Grand Total: <p class="cart_total_price">@Model.GrandTotal.ToString("#,##0")</p>
+                               
+                                <form>
+                                    Coupon Code: <input type="text" class="form-control coupon-value" />
+                                    @*<span class="text text-success">@Model.CouponCode</span> <br /> *@
+                                    <input type="button" value="Apply" class="btn btn-sm btn-primary btn-apply-coupon" />
+                                </form>
+
+                                ShippingCost: <p class="cart_total_price">@Model.ShippingCost.ToString()</p>
                                 <p><a asp-action="DeleteShipping" asp-controller="Cart">Xóa shipping</a></p>
                             </td>
 
@@ -83,7 +90,7 @@
                                     </select>
                                 </div>
 
-                                <button type="button" class="btn btn-default btn-add-shipping">Tính Phí Ship</button>
+                                <button type="button" class="btn btn-default btn-add-shipping" >Tính Phí Ship</button>
                             </td>
 
 
@@ -118,29 +125,32 @@
 	</div>
 </section> <!--/#cart_items-->
 @section Scripts {
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
-        $(".btn-add-shipping").click(function () {
-            var tinh = $("#tinh").find('option:selected').text();
-            var quan = $("#quan").find('option:selected').text();
-            var phuong = $("#phuong").find('option:selected').text();
+        $(document).ready(function () {
+            $(".btn-add-shipping").click(function () {
+                var tinh = $("#tinh").find('option:selected').text();
+                var quan = $("#quan").find('option:selected').text();
+                var phuong = $("#phuong").find('option:selected').text();
 
-            if (tinh === '' || quan === '' || phuong === '') {
-                Swal.fire("Làm ơn đừng bỏ trống hoặc chọn giá trị phù hợp!!!");
-            } else {
-                $.ajax({
-                    type: "POST",
-                    url: "@Url.Action("GetShipping", "Cart")",
-                    data: { tinh: tinh, quan: quan, phuong: phuong}, // Gửi dữ liệu đến server
-                    success: function (result) {
-                        //Handle successful
-                        if (result) {
-                            
-                            //location.reload();
-
+                if (tinh == 'Tỉnh Thành' || quan == 'Quận Huyện' || phuong == 'Phường Xã') {
+                    Swal.fire("Làm ơn đừng bỏ trống hoặc chọn giá trị phù hợp!!!");
+                } else {
+                    $.ajax({
+                        type: "POST",
+                        url: "@Url.Action("GetShipping", "Cart")",
+                        data: { tinh: tinh, quan: quan, phuong: phuong },
+                        success: function (result) {
+                            Swal.fire("Thành công!", "Phí vận chuyển đã được tính ");
+                            location.reload();
+                        },
+                        error: function () {
+                            Swal.fire("Lỗi!", "Không thể tính phí vận chuyển", "error");
                         }
-                    }
-                });
-            }
+                    });
+                }
+            });
         });
 
         $(document).ready(function () {
