@@ -99,13 +99,13 @@
                             <td> <a class="btn btn-danger btn-sm" asp-controller="Cart" asp-action="Clear"> Xóa tất cả </a></td>
                             @if (User.Identity?.IsAuthenticated ?? false){
                             <td>
-                                    @if(Model.ShippingCost < 0)
+                                    @if(Model.ShippingCost <= 0)
                                     {
-                                        <a disable="disable" class="btn btn-primary btn-sm" asp-controller="Checkout" asp-action="Checkout"> Đặt hàng </a>
+                                        <a disable="disable" onclick="return confirm('Xác nhận đặt hàng?')" class="btn btn-primary btn-sm" asp-controller="Checkout" asp-action="Checkout"> Đặt hàng </a>
                                         <span class="text text-danger">Yêu cầu tính phí vận chuyển.</span>
                                     }
                                     else{
-                                         <a class="btn btn-primary btn-sm" asp-controller="Checkout" asp-action="Checkout"> Đặt hàng </a>
+                                        <a class="btn btn-primary btn-sm" onclick="return confirm('Xác nhận đặt hàng?')" asp-controller="Checkout" asp-action="Checkout"> Đặt hàng </a>
                                     }
                                 </td>
                             }

@@ -68,14 +68,14 @@ namespace ECommerce_web.Controllers
                 await _dataContext.SaveChangesAsync();
                 var receiver = checkMail.Email;
                 var subject = "Change password for user " + checkMail.Email;
-                var message = "Click on link to change password" +
-                    "<a href='" + $"{Request.Scheme}://{Request.Host}/Account/NewPass? email=" +
-                    checkMail.Email + "&token=" + token + "'>";
+				var message = "Click on link to change password: " +
+	                            $"<a href='{Request.Scheme}://{Request.Host}/Account/NewPass?email={checkMail.Email}&token={token}'>Reset Password</a>";
 
-                await _emailSender.SendEmailAsync(receiver, subject, message);
+
+				await _emailSender.SendEmailAsync(receiver, subject, message);
             }
 
-            TempData["success"] = "An email has been sent to your registered email address with password reset ints,";
+            TempData["success"] = "An email has been sent to your registered email address with password reset ints.";
             return RedirectToAction("ForgetPass", "Account");
         }  
 
@@ -168,6 +168,37 @@ namespace ECommerce_web.Controllers
         {
             await _signInManager.SignOutAsync();
             return Redirect(returnUrl);
+        }
+        //Update password
+        [HttpPost]
+        public async Task<IActionResult> UpdateNewPassword(AppUserModel user, string token)
+        {
+            var check_user = await _userManager.Users
+                .Where(u => u.Email == user.Email)
+                .Where(u => u.Token == user.Token).FirstOrDefaultAsync();
+
+            if(check_user != null)
+            {
+                //update user with new password and token
+                string newtoken = Guid.NewGuid().ToString();
+                //Hash the new pasword
+                var passwordHasher = new PasswordHasher<AppUserModel>();
+                var passwordHash = passwordHasher.HashPassword(check_user, user.PasswordHash);
+
+                check_user.PasswordHash = passwordHash;
+                check_user.Token = newtoken;
+
+                await _userManager.UpdateAsync(check_user);
+                TempData["success"] = "Mật khẩu được đổi thành công!!!";
+                return RedirectToAction("Login", "Account");
+
+            }
+            else
+            {
+                TempData["error"] = "Không tìm thấy Email hoặc Token không tồn tại";
+                return RedirectToAction("ForgetPass", "Account");
+            }
+            return View();
         }
 	}
 }
