@@ -1,9 +1,12 @@
 ﻿using ECommerce_web.Areas.Admin.Repository;
 using ECommerce_web.Models;
 using ECommerce_web.Repository;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System;
+
 
 
 internal class Program
@@ -11,6 +14,7 @@ internal class Program
     private static void Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
+       
 
         // Connection db
         builder.Services.AddDbContext<DataContext>(options =>
@@ -47,6 +51,18 @@ internal class Program
             options.Password.RequiredLength = 6;
             options.User.RequireUniqueEmail = true;
         });
+
+        builder.Services.AddAuthentication(options =>
+        {
+            options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+            options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+            options.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+        }).AddCookie().AddGoogle(GoogleDefaults.AuthenticationScheme, options =>
+        {
+            options.ClientId = builder.Configuration.GetSection("GoogleKeys:ClientId").Value;
+            options.ClientSecret = builder.Configuration.GetSection("GoogleKeys:ClientSecret").Value;
+        });
+
         var app = builder.Build();
         app.UseStatusCodePagesWithRedirects("/Home/Error?statuscode={0}");
 

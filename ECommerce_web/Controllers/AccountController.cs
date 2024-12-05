@@ -2,6 +2,9 @@
 using ECommerce_web.Models;
 using ECommerce_web.Models.ViewModels;
 using ECommerce_web.Repository;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authentication.OAuth.Claims;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -29,6 +32,46 @@ namespace ECommerce_web.Controllers
         public IActionResult Login(string returnUrl)
         {
             return View(new LoginViewModel { ReturnURL = returnUrl});
+        }
+        public async Task<IActionResult> UpdateAccount()
+        {
+            if ((bool)!User.Identity?.IsAuthenticated)
+            {
+                return RedirectToAction("Login", "Account");
+            }
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var userEmail = User.FindFirstValue(ClaimTypes.Email);
+        //get user by user email
+            var user = await _userManager.Users.FirstOrDefaultAsync(u => u.Id == userId);
+            if (user == null)
+            {
+                return NotFound();
+            }
+            return View(user);
+        }
+        [HttpPost]
+        public async Task<IActionResult> UpdateInfoAccount(AppUserModel user)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            //var userEmail = User.FindFirstValue(ClaimTypes.Email);
+            //get user by user email
+            var userById = await _userManager.Users.FirstOrDefaultAsync(u => u.Id == userId);
+            if (userById == null)
+            {
+                return NotFound();
+            }
+            else
+            {
+                //Hash the new pasword
+                var passwordHasher = new PasswordHasher<AppUserModel>();
+                var passwordHash = passwordHasher.HashPassword(userById, user.PasswordHash);
+                userById.PasswordHash = passwordHash;
+
+                _dataContext.Update(userById);
+                await _dataContext.SaveChangesAsync();
+                TempData["success"] = "Update Account Information Successfully";
+            }
+            return RedirectToAction("UpdateAccount", "Account");
         }
 
 
@@ -166,6 +209,7 @@ namespace ECommerce_web.Controllers
 		}
 		public async Task<IActionResult> Logout(string returnUrl = "/")
         {
+            await HttpContext.SignOutAsync();
             await _signInManager.SignOutAsync();
             return Redirect(returnUrl);
         }
@@ -199,6 +243,28 @@ namespace ECommerce_web.Controllers
                 return RedirectToAction("ForgetPass", "Account");
             }
             return View();
+        }
+        public async Task LoginByGoogle()
+        {
+            await HttpContext.ChallengeAsync(GoogleDefaults.AuthenticationScheme,
+                new AuthenticationProperties
+                {
+                    RedirectUri = Url.Action("GoogleResponse")
+                });
+        }
+        public async Task<IActionResult> GoogleResponse()
+        {
+            var result = await HttpContext.AuthenticateAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            var claims = result.Principal.Identities.FirstOrDefault().Claims.Select(Claim => new
+            {
+                Claim.Issuer,
+                Claim.OriginalIssuer,
+                Claim.Type,
+                Claim.Value
+            });
+             TempData["success"] = "Đăng nhập tài khoản Google thành công";
+             return RedirectToAction("Index", "Hom e");
+            //return Json(claims);
         }
 	}
 }
