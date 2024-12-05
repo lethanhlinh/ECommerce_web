@@ -1,0 +1,96 @@
+﻿@model IEnumerable<BrandModel>
+@{
+    ViewData["title"] = "Dashboard";
+}
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta name="viewport" content="width=device-width" />
+        <title>Dashboard</title>
+     </head>
+<body>
+    <h3>Dashboard</h3>
+    <div class="row">
+        <div class="col-md-3">
+            <p>Thống kê sản phẩm</p>
+            @ViewBag.CountProduct
+        </div>
+
+        <div class="col-md-3">
+            <p>Thống kê đơn hàng</p>
+            @ViewBag.CountOrder
+        </div>
+
+        <div class="col-md-3">
+            <p>Thống kê Danh mục</p>
+            @ViewBag.CountCategory
+        </div>
+
+        <div class="col-md-3">
+            <p>Thống kê Người dùng</p>
+            @ViewBag.CountUser
+        </div>
+    </div>
+
+    <div class="row">
+        <p>Biểu đồ thống kê</p>
+        <div id="myfirstchart" style="height: 250px;"></div>
+    </div>
+    
+</body>
+@section Scripts{
+
+    <script>
+       
+            $(document).ready(function () {
+                $.ajax({
+                    url: '@Url.Action("GetChartData", "Dashboard")',
+                    type: "POST",
+                    dataType: "json",
+                    success: function (data) {
+                        // Xử lý dữ liệu lấy được từ server
+                        var chartData = data.map(function (item) {
+                            return {
+                                date: item.date,
+                                sold: item.sold,
+                                quantity: item.quantity,
+                                revenue: item.revenue,
+                                profit: item.profit
+                            };
+                        });
+                    //Chart Moris
+                    new Morris.Line({
+ 
+                        element: 'myfirstchart',
+                     
+                        data: chartData,
+                        
+                     
+                        xkey: 'date',
+                        xLabelFormat: function (x) {
+                            return new Date(x).toLocaleDateString();
+                        },
+                    
+                        ykeys: ['sold','quantity','revenue','profit'],
+                        // Labels for the ykeys -- will be displayed when you hover over the
+                        // chart.
+                        labels: ["Số lượng bán ra", "Đơn hàng", "Doanh thu", "Lợi nhuận"]
+                    });
+                        // Gọi hàm hoặc logic hiển thị dữ liệu (ví dụ: vẽ biểu đồ)
+                        // Chart logic sẽ được thêm ở đây
+                    },
+                    error: function (error) {
+                        console.error("Lỗi khi lấy dữ liệu từ server:", error);
+                    }
+                });
+            });
+ 
+        
+       
+    </script>
+}
+</html>
+
+@* moris chart *@
+
+

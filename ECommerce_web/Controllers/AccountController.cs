@@ -209,8 +209,8 @@ namespace ECommerce_web.Controllers
 		}
 		public async Task<IActionResult> Logout(string returnUrl = "/")
         {
-            await HttpContext.SignOutAsync();
-            await _signInManager.SignOutAsync();
+            await HttpContext.SignOutAsync(); //Logout khi đăng nhập bằng tài khoản Google
+            await _signInManager.SignOutAsync(); //Logout tài khoản thường
             return Redirect(returnUrl);
         }
         //Update password
@@ -244,6 +244,8 @@ namespace ECommerce_web.Controllers
             }
             return View();
         }
+
+        //Đăng nhập bằng Google
         public async Task LoginByGoogle()
         {
             await HttpContext.ChallengeAsync(GoogleDefaults.AuthenticationScheme,
@@ -252,19 +254,75 @@ namespace ECommerce_web.Controllers
                     RedirectUri = Url.Action("GoogleResponse")
                 });
         }
+        //Xử lí khi đăng nhập bằng tài khoản Google
         public async Task<IActionResult> GoogleResponse()
         {
-            var result = await HttpContext.AuthenticateAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            var claims = result.Principal.Identities.FirstOrDefault().Claims.Select(Claim => new
-            {
-                Claim.Issuer,
-                Claim.OriginalIssuer,
-                Claim.Type,
-                Claim.Value
-            });
-             TempData["success"] = "Đăng nhập tài khoản Google thành công";
-             return RedirectToAction("Index", "Hom e");
+            //var result = await HttpContext
+            //    .AuthenticateAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            //var claims = result.Principal.Identities.FirstOrDefault().Claims.Select(Claim => new
+            //{
+            //    Claim.Issuer,
+            //    Claim.OriginalIssuer,
+            //    Claim.Type,
+            //    Claim.Value
+            //});
+            // TempData["success"] = "Đăng nhập tài khoản Google thành công";
+            // return RedirectToAction("Index", "Home");
             //return Json(claims);
+            var result = await HttpContext.AuthenticateAsync(GoogleDefaults.AuthenticationScheme);
+            if(!result.Succeeded)
+            {
+                //Nếu xác thực ko thành công quay về trang Login
+                return RedirectToAction("Login");
+            }
+            var claims = result.Principal.Identities.FirstOrDefault().Claims.Select(claim => new
+            { //claim: mọi thông tin khi đăng nhập thành công
+                claim.Issuer,
+                claim.OriginalIssuer,
+                claim.Type,
+                claim.Value
+            });
+          //  return Json(claims);
+          var email = claims.FirstOrDefault(c=>c.Type == ClaimTypes.Email)?.Value;
+            //var name = claims.FirstOrDefault(c=>c.Type== ClaimTypes.GivenName)?.Value; : ko tối ưu khi có dấu
+            string emailName = email.Split('@')[0];  //phân tách tên email dựa vào dấu @
+
+            var existingUser = await _userManager.FindByEmailAsync(email); //Check sự tồn tại của user
+
+            if(existingUser == null) //ko tồn tại, tạo user mới
+            {
+                //nếu user ko tồn tại trong db thì tạo user mới với password mặc định 1-9
+                var passwordHasher = new PasswordHasher<AppUserModel>();
+                var hashedPassword = passwordHasher.HashPassword(null, "123456789");
+
+                //Tạo user mới
+                var newUser = new AppUserModel
+                {
+                    UserName = emailName,
+                    Email = email
+                };
+                newUser.PasswordHash = hashedPassword;
+                //Tạo user
+                var createUserResult = await _userManager.CreateAsync(newUser);
+                if (!createUserResult.Succeeded) 
+                {
+                    TempData["error"] = "Đăng kí tài khoản thất bại. Vui lòng thử lại";
+                    return RedirectToAction("Login", "Account");
+                }
+                else
+                {
+                    //Nếu tạo user thành công thì đăng nhập
+                    await _signInManager.SignInAsync(newUser, isPersistent: false);
+                    TempData["success"] = "Đăng kí tài khoản thành công";
+                    return RedirectToAction("Index", "Home");
+                }
+            }
+            else
+            {
+                //đã có user thì đăng nhập với existingUser
+                await _signInManager.SignInAsync(existingUser, isPersistent: false);
+            }
+            return RedirectToAction("Login","Account");
         }
 	}
 }

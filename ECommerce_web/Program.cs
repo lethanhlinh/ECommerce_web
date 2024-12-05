@@ -52,11 +52,12 @@ internal class Program
             options.User.RequireUniqueEmail = true;
         });
 
+        //Configuration Login Google Account
         builder.Services.AddAuthentication(options =>
         {
-            options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-            options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-            options.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+            //options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+            //options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+            //options.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
         }).AddCookie().AddGoogle(GoogleDefaults.AuthenticationScheme, options =>
         {
             options.ClientId = builder.Configuration.GetSection("GoogleKeys:ClientId").Value;
