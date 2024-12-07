@@ -1,4 +1,139 @@
 ﻿@model IEnumerable<ProductModel>
+<style>
+    .col-sm-3 {
+        padding: 0 15px;
+    }
+
+    .col-sm-9 {
+        padding: 0 15px;
+    }
+
+    .features_items {
+        margin-top: 30px;
+        padding: 0 15px;
+    }
+
+    .title {
+        font-size: 28px;
+        color: #333;
+        margin-bottom: 30px;
+        font-weight: bold;
+    }
+
+    .product-image-wrapper {
+        border: 1px solid #ddd;
+        border-radius: 10px;
+        padding: 15px;
+        background-color: #fff;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+    }
+
+    .product-image-wrapper:hover {
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    .single-products {
+        position: relative;
+        text-align: center;
+    }
+
+    .productinfo img {
+        max-width: 100%;
+        border-radius: 5px;
+        height: auto;
+        object-fit: cover;
+    }
+
+    .productinfo h2 {
+        font-size: 20px;
+        color: #333;
+        font-weight: bold;
+        margin: 15px 0;
+    }
+
+    .productinfo p {
+        font-size: 14px;
+        color: #666;
+    }
+
+    .btn {
+        border-radius: 5px;
+        font-size: 14px;
+        padding: 10px 20px;
+        margin-top: 10px;
+        background-color: #007bff;
+        color: #fff;
+        transition: background-color 0.3s ease;
+    }
+
+    .btn:hover {
+        background-color: #0056b3;
+    }
+
+    .choose {
+        margin-top: 15px;
+    }
+
+    .nav-pills {
+        list-style: none;
+        padding-left: 0;
+        display: flex;
+        justify-content: center;
+    }
+
+    .nav-pills li {
+        margin-right: 10px;
+    }
+
+    .nav-pills a {
+        font-size: 14px;
+        color: #007bff;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+    }
+
+    .nav-pills a:hover {
+        color: #0056b3;
+    }
+
+    .nav-pills i {
+        margin-right: 5px;
+    }
+
+    .btn-default {
+        background-color: #f8f9fa;
+        color: #6c757d;
+    }
+
+    .btn-default:hover {
+        background-color: #e2e6ea;
+    }
+
+    .add-to-cart {
+        background-color: #28a745;
+    }
+
+    .add-to-cart:hover {
+        background-color: #218838;
+    }
+
+    .product-image-wrapper {
+        margin-bottom: 30px;
+    }
+
+    .padding-right {
+        padding-right: 30px;
+    }
+
+    .col-sm-4 {
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+
+</style>
+
 <div class="col-sm-3">
 	@Html.Partial("_SidebarPartial")
 </div>
@@ -33,12 +168,6 @@
 							</div>
 						</div>
 					</a>
-					<div class="choose">
-						<ul class="nav nav-pills nav-justified">
-							<li><a href="#"><i class="fa fa-plus-square"></i>Add to wishlist</a></li>
-							<li><a href="#"><i class="fa fa-plus-square"></i>Add to compare</a></li>
-						</ul>
-					</div>
 				</div>
 			</div>
 		}

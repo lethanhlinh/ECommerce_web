@@ -1,4 +1,128 @@
 ﻿@model IEnumerable<ProductModel>
+<style>
+	/* General styles */
+	body {
+		font-family: Arial, sans-serif;
+		background-color: #f8f8f8;
+	}
+
+	h2.title {
+		font-size: 24px;
+		color: #333;
+		margin: 20px 0;
+	}
+
+	.features_items {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 20px;
+		justify-content: space-around;
+	}
+
+	/* Product item styles */
+	.product-image-wrapper {
+		position: relative;
+		border: 1px solid #ddd;
+		border-radius: 5px;
+		background-color: #fff;
+		box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+		overflow: hidden;
+		text-align: center;
+		padding: 10px;
+	}
+
+	.single-products {
+		margin-bottom: 15px;
+	}
+
+	.product img {
+		width: 100%;
+		height: auto;
+		max-height: 200px;
+		object-fit: cover;
+	}
+
+	.product h2 {
+		font-size: 18px;
+		color: #e74c3c;
+		margin: 10px 0;
+	}
+
+	.product p {
+		font-size: 14px;
+		color: #555;
+	}
+
+	.product .btn {
+		display: inline-block;
+		margin-top: 10px;
+		padding: 10px 20px;
+		font-size: 14px;
+		color: #fff;
+		background-color: #5cb85c;
+		border-radius: 5px;
+		transition: background-color 0.3s ease;
+	}
+
+		.product .btn:hover {
+			background-color: #4cae4c;
+		}
+
+		.product .btn:disabled {
+			background-color: #ccc;
+		}
+
+	/* Choose section styles */
+	.choose {
+		margin-top: 10px;
+	}
+
+		.choose ul {
+			list-style-type: none;
+			padding: 0;
+			display: flex;
+			justify-content: space-evenly;
+		}
+
+			.choose ul li {
+				font-size: 14px;
+			}
+
+				.choose ul li a {
+					text-decoration: none;
+					color: #5bc0de;
+				}
+
+					.choose ul li a:hover {
+						color: #31b0d5;
+					}
+
+	/* Sidebar styles */
+	.col-sm-3 {
+		padding-right: 15px;
+	}
+
+	.col-sm-9 {
+		padding-left: 15px;
+	}
+
+	.padding-right {
+		padding-right: 15px;
+	}
+
+	/* Slider styles */
+	#slider-range {
+		width: 100%;
+		margin: 20px 0;
+	}
+
+	#amount {
+		font-size: 16px;
+		color: #333;
+		font-weight: bold;
+	}
+</style>
+
 <div class="col-sm-3">
 	@Html.Partial("_SidebarPartial")
 </div>
@@ -33,12 +157,6 @@
 							</div>
 						</div>
 					</a>
-					<div class="choose">
-						<ul class="nav nav-pills nav-justified">
-							<li><a href="#"><i class="fa fa-plus-square"></i>Add to wishlist</a></li>
-							<li><a href="#"><i class="fa fa-plus-square"></i>Add to compare</a></li>
-						</ul>
-					</div>
 				</div>
 			</div>
 		}
