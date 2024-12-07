@@ -1,6 +1,8 @@
 ﻿using ECommerce_web.Areas.Admin.Repository;
 using ECommerce_web.Models;
+using ECommerce_web.Models.Momo;
 using ECommerce_web.Repository;
+using ECommerce_web.Services.Momo;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Identity;
@@ -14,7 +16,9 @@ internal class Program
     private static void Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
-       
+        //Connect MomoAPI
+        builder.Services.Configure<MomoOptionModel>(builder.Configuration.GetSection("MomoAPI"));
+        builder.Services.AddScoped<IMomoService, MomoService>();
 
         // Connection db
         builder.Services.AddDbContext<DataContext>(options =>

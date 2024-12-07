@@ -95,7 +95,15 @@
 
 
                             <td></td>
-                            <td></td>
+                            <td>
+                                <form method="post" asp-action="CreatePaymentUrl" asp-controller="Payment">
+                                    <input type="hidden" name="Amount" value="@Model.GrandTotal" />
+                                    <input type="hidden" name="OrderId" value="@Guid.NewGuid().ToString()" />
+                                    <input type="hidden" name="OrderInfo" value="Thanh toán cho đơn hàng tại Azure Store" />
+                                    <input type="hidden" name="FullName" value="AzureStore" />
+                                    <button class="btn btn-danger" name="PayUrl" type="submit">Pay with MoMo</button>
+                                </form>
+                            </td>
                             <td> <a class="btn btn-danger btn-sm" asp-controller="Cart" asp-action="Clear"> Xóa tất cả </a></td>
                             @if (User.Identity?.IsAuthenticated ?? false){
                             <td>
