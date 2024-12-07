@@ -2,6 +2,7 @@
 using ECommerce_web.Models;
 using ECommerce_web.Models.ViewModels;
 using ECommerce_web.Repository;
+using ECommerce_web.Services.Vnpay;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
@@ -13,10 +14,12 @@ namespace ECommerce_web.Controllers
     {
         private readonly DataContext _dataContext;
         private readonly IEmailSender _emailSender;
-        public CheckoutController(IEmailSender emailSender, DataContext context)
+        private readonly IVnPayService _vnPayService;
+        public CheckoutController(IEmailSender emailSender, DataContext context, IVnPayService vnPayService)
         {
             _dataContext = context;
             _emailSender = emailSender;
+            _vnPayService = vnPayService;
         }
 
         public async Task<IActionResult> Checkout()
@@ -86,5 +89,16 @@ namespace ECommerce_web.Controllers
             }
             return View();
         }
+
+        //ham tra ve cua Vnpay
+       
+        [HttpGet]
+        public IActionResult PaymentCallbackVnpay()
+        {
+            var response = _vnPayService.PaymentExecute(Request.Query);
+
+            return Json(response);
+        }
+
     }
 }

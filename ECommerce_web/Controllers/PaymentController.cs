@@ -1,5 +1,7 @@
 ﻿using ECommerce_web.Models;
+using ECommerce_web.Models.Vnpay;
 using ECommerce_web.Services.Momo;
+using ECommerce_web.Services.Vnpay;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ECommerce_web.Controllers
@@ -7,9 +9,11 @@ namespace ECommerce_web.Controllers
     public class PaymentController : Controller
     {
         private IMomoService _momoService;
-        public PaymentController (IMomoService momoService)
+        private readonly IVnPayService _vnPayService;
+        public PaymentController (IMomoService momoService, IVnPayService vnPayService)
         {
             _momoService = momoService;
+            _vnPayService = vnPayService;
         }
 
         [HttpPost]
@@ -24,6 +28,22 @@ namespace ECommerce_web.Controllers
         {
             var response = _momoService.PaymentExecuteAsync(HttpContext.Request.Query);
             return View(response);
-        } 
-    }
+        }
+
+        //Vnpay
+
+
+        [HttpPost]
+        public IActionResult CreatePaymentUrlVnpay(PaymentInformationModel model)
+        {
+            var url = _vnPayService.CreatePaymentUrl(model, HttpContext);
+
+            return Redirect(url);
+        }
+
+
+    
+
+
+}
 }
