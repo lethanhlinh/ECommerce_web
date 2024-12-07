@@ -154,7 +154,8 @@ namespace ECommerce_web.Areas.Admin.Controllers
 				// Cập nhật các thuộc tính khác của sản phẩm
 				existingProduct.Name = product.Name;
 				existingProduct.Description = product.Description;
-				existingProduct.Price = product.Price;
+                existingProduct.Price = product.CapitalPrice;
+                existingProduct.Price = product.Price;
 				existingProduct.CategoryId = product.CategoryId;
 				existingProduct.BrandId = product.BrandId;
 

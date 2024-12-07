@@ -16,7 +16,9 @@ namespace ECommerce_web.Models
 		[Range(0.01, double.MaxValue)]
 		[Column(TypeName = "decimal(8, 2)")]
 		public decimal Price { get; set; }
-		[Required, Range(1, int.MaxValue, ErrorMessage = "Chọn một thương hiệu!!!")]
+        [Required(ErrorMessage = "Yêu cầu nhập giá vốn")]
+        public decimal CapitalPrice { get; set; }
+        [Required, Range(1, int.MaxValue, ErrorMessage = "Chọn một thương hiệu!!!")]
 		public int BrandId { get; set; }
 		[Required, Range(1, int.MaxValue, ErrorMessage = "Chọn một danh mục!!!")]
 		public int CategoryId { get; set; }

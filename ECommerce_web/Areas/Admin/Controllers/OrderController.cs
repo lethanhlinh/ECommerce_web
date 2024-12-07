@@ -1,4 +1,5 @@
-﻿using ECommerce_web.Repository;
+﻿using ECommerce_web.Models;
+using ECommerce_web.Repository;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -45,16 +46,67 @@ namespace ECommerce_web.Areas.Admin.Controllers
 			return NotFound();
 			}
 			order.Status = status;
-			try
+			_dataContext.Update(order);
+			if (status == 0)
 			{
-				await _dataContext.SaveChangesAsync();
-				return Ok(new { success = true, message = "Order status update successfully" });
+				var DetailsOrder = await _dataContext.OrderDetails.Include(od => od.Product)
+					.Where(od => od.OrderCode == order.OrderCode)
+					.Select(od => new
+					{
+						od.Quantity,
+						od.Product.Price,
+						od.Product.CapitalPrice
+					}).ToListAsync();
+				//Lấy data thống kê dựa vào ngày đặt hàng
+				var statisticalModel = await _dataContext.Statisticals
+					.FirstOrDefaultAsync(s => s.DateCreated.Date == order.CreateDate.Date);
+				if (statisticalModel != null)
+				{
+					foreach(var orderDetail in DetailsOrder)
+					{
+
+						//tồn tại ngày thì cộng dồn
+						statisticalModel.Quantity += 1;
+						statisticalModel.Sold += orderDetail.Quantity;
+                        statisticalModel.Revenue += orderDetail.Quantity + orderDetail.Price;
+						statisticalModel.Profit += orderDetail.Price + orderDetail.CapitalPrice;
+					}
+					_dataContext.Update(statisticalModel);
+				}
+				else
+				{
+					int new_quantity = 0;
+					int new_sold = 0;
+					decimal new_profit = 0;
+					foreach(var orderDetail in DetailsOrder)
+					{
+						new_quantity += 1;
+						new_sold += orderDetail.Quantity;
+						new_profit += orderDetail.Price - orderDetail.CapitalPrice;
+
+						statisticalModel = new StatisticalModel
+						{
+							DateCreated = order.CreateDate,
+							Quantity = new_quantity,
+							Sold = new_sold,
+							Revenue = orderDetail.Quantity + orderDetail.Price,
+							Profit = new_profit
+						};
+					}
+					_dataContext.Add(statisticalModel);
+				}
+				
 			}
-			catch (Exception ex)
-			{
-				return StatusCode(500, " An error occurred while updating the order status");
-			}
-		}
+            try
+            {
+                await _dataContext.SaveChangesAsync();
+                return Ok(new { success = true, message = "Order status update successfully" });
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, "An error occurred while updating the order status");
+            }
+        }
 
 		[Route("Delete")]
 		public async Task<ActionResult> Delete(string orderCode)

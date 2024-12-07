@@ -74,5 +74,33 @@ namespace ECommerce_web.Areas.Admin.Controllers
 
             return Json(data); // Trả về dữ liệu dưới dạng JSON
         }
+        [HttpPost]
+        [Route("FilterData")]
+        public IActionResult FilterData(DateTime? fromDate, DateTime? toDate)
+        {
+            var query  = _dataContext.Statisticals.AsQueryable();
+            if (fromDate.HasValue)
+            {
+                query = query.Where(s => s.DateCreated >= fromDate);
+                
+            }
+            if (toDate.HasValue)
+            {
+                query = query.Where(s => s.DateCreated >= toDate);
+
+            }
+            var data = query
+                .Select(s => new
+                {
+                    date = s.DateCreated.ToString("yyyy-MM-dd"),
+                    sold = s.Sold,
+                    quantity = s.Quantity,
+                    revenue = s.Revenue,
+                    profit = s.Profit
+                })
+                .ToList();
+
+            return Json(data); // Trả về dữ liệu dưới dạng JSON
+        }
     }
     }

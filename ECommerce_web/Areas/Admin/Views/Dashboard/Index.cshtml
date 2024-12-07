@@ -1,4 +1,4 @@
-﻿@model IEnumerable<BrandModel>
+﻿@model StatisticalModel
 @{
     ViewData["title"] = "Dashboard";
 }
@@ -44,6 +44,14 @@
                     <option value="90">3 tháng trước</option>
                     <option value="365">1 năm</option>
                 </select>
+            </div>
+            <div class="col-md-3">
+                <h4>Tùy chọn:</h4>
+                <label>Từ ngày</label>
+                <input type="date" class="form-control" id="date-form" asp-for="@Model.DateCreated"/>
+                <label>Đếm ngày</label>
+                <input type="date" class="form-control" id="date-to" asp-for="@Model.DateCreated" />
+                <button id="filterButton" class="btn btn-primary">Filter</button>
             </div>
         </div>
         <div class="row">
@@ -132,6 +140,7 @@ $(document).ready(function () {
         }
     });
 
+
     // Cập nhật dữ liệu khi thay đổi bộ lọc
     $('.filter-select').on('change', function () {
         var days = $(this).val();
@@ -170,6 +179,39 @@ $(document).ready(function () {
             }
         });
     });
+
+            //Lọc theo tùy chọn
+             $('.filter-select').on('change', function () {
+                var fromDate = $("#date_from").val();
+                var toDate = $("#date_to").val();
+
+               
+                $.ajax({
+                    url: "@Url.Action("FilterData", "Dashboard")",
+                    data: { fromDate: fromDate, toDate: toDate},
+                    type: 'POST',
+                   
+                    success: function (data) {
+                        if (data) {
+                            ChartMorris.setData(data.map(function (item) {
+                                return {
+                                    date: item.date,
+                                    sold: item.sold,
+                                    quantity: item.quantity,
+                                    revenue: item.revenue,
+                                    profit: item.profit
+                                };
+                            }));
+                        } else {
+                            console.warn("No data received for Morris chart update.");
+                            ChartMorris.setData([]);
+                        }
+                    },
+                    error: function (error) {
+                        console.error("Error fetching data:", error);
+                    }
+                });
+            });
 });
 
        
