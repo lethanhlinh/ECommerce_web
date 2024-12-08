@@ -9,8 +9,8 @@ using Microsoft.EntityFrameworkCore;
 namespace ECommerce_web.Areas.Admin.Controllers
 {
 	[Area("Admin")]
-	//[Route("Admin/Category")]
-	//[Authorize("Admin, Author")]
+	[Route("Admin/Category")]
+	[Authorize(Roles = "Admin, Author")]
 	public class CategoryController : Controller 
 	{
 		private readonly DataContext _dataContext;
@@ -23,7 +23,7 @@ namespace ECommerce_web.Areas.Admin.Controllers
         //}
 
         //Phân trang
-    //    [Route("Index")]
+		[Route("Index")]
         public async Task<IActionResult> Index(int pg = 1)
         {
             List<CategoryModel> category = _dataContext.Categories.ToList(); //33 datas
@@ -51,13 +51,13 @@ namespace ECommerce_web.Areas.Admin.Controllers
         }
 
         [HttpGet]
-		//[Route("Create")]
+		[Route("Create")]
 		public IActionResult Create()
 		{
 			return View();
 		}
 		[HttpPost]
-		//[Route("Create")]
+		[Route("Create")]
 		[ValidateAntiForgeryToken]
 		public async Task<IActionResult> Create(CategoryModel category)
 		{
@@ -98,14 +98,15 @@ namespace ECommerce_web.Areas.Admin.Controllers
 
 		//Edit danh mục
 		[HttpGet]
-		//[Route("Edit")]
+		[Route("Edit/{Id}")]
 		public async Task<IActionResult> Edit(int Id)
 		{
 			CategoryModel category = await _dataContext.Categories.FindAsync(Id);
 			return View(category);
 		}
 		[HttpPost]
-		[ValidateAntiForgeryToken]
+        [Route("Edit/{Id}")]
+        [ValidateAntiForgeryToken]
 		public async Task<IActionResult> Edit(CategoryModel category)
 		{
 			if (ModelState.IsValid)
@@ -163,7 +164,7 @@ namespace ECommerce_web.Areas.Admin.Controllers
 			return View(category);
 		}
 
-		//[Route("Delete")]
+		[Route("Delete")]
 		public async Task<IActionResult> Delete(int Id)
 		{
 			CategoryModel category = await _dataContext.Categories.FindAsync(Id);

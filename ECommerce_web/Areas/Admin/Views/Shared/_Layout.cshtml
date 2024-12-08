@@ -7,12 +7,12 @@
 	<meta name="author" content="">
 	<title> @ViewData["title"] = Admin Area </title>
 	<link href="~/css/bootstrap.min.css" rel="stylesheet">
-		<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.0.1/css/font-awesome.css" rel="stylesheet">
-		<link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.14.5/dist/sweetalert2.min.css" rel="stylesheet">
-		<link href="//cdn.datatables.net/2.1.8/css/dataTables.dataTables.min.css" rel="stylesheet">
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.0.1/css/font-awesome.css" rel="stylesheet">
+	<link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.14.5/dist/sweetalert2.min.css" rel="stylesheet">
+	<link href="//cdn.datatables.net/2.1.8/css/dataTables.dataTables.min.css" rel="stylesheet">
 	<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.css">
 	<link href="https://cdn.datatables.net/buttons/3.2.0/css/buttons.dataTables.css" rel="stylesheet">
-		<link href="~/css/font-awesome.min.css" rel="stylesheet">
+	<link href="~/css/font-awesome.min.css" rel="stylesheet">
 	<link href="~/css/prettyPhoto.css" rel="stylesheet">
 	<link href="~/css/price-range.css" rel="stylesheet">
 	<link href="~/css/animate.css" rel="stylesheet">
@@ -73,11 +73,11 @@
 							</button>
 						</div>
 						<div class="mainmenu pull-left">
-							<ul class="nav navbar-nav collapse navbar-collapse">
-								<li><a asp-controller="Home" asp-action="Index" class="active">Home</a></li>
+							<ul id="navbar" class="nav navbar-nav collapse navbar-collapse">
+								<li><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
+								<li><a asp-controller="Product" asp-action="Index" class="active"> Products</a></li>
 								<li><a asp-controller="Dashboard" asp-action="Index">Dashboard</a></li>
 								<li><a asp-controller="Slider" asp-action="Index">Sliders</a></li>
-								<li><a asp-controller="Product" asp-action="Index"> Products</a></li>
 								<li><a asp-controller="Shipping" asp-action="Index">Shipping</a></li>
 								<li><a asp-controller="Coupon" asp-action="Index">Coupons</a></li>
 								<li><a asp-controller="Category" asp-action="Index">Categories</a></li>
@@ -86,7 +86,6 @@
 								<li><a asp-controller="Role" asp-action="Index">Roles</a></li>
 								<li><a asp-controller="User" asp-action="Index">Users</a></li>
 								<li><a asp-controller="Contact" asp-action="Index">Contact</a></li>
-							</ul>
 							</ul>
 						</div>
 					</div>
@@ -127,9 +126,8 @@
 	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.14.5/dist/sweetalert2.all.min.js"></script>
 
 	
-<script src="//cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script>
- <script src="//cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.min.js"></script>
-
+	<script src="//cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script>
+	<script src="//cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.min.js"></script>
 	<script src="https://cdn.datatables.net/buttons/3.2.0/js/dataTables.buttons.js"></script>
 	<script src="https://cdn.datatables.net/buttons/3.2.0/js/buttons.dataTables.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
@@ -155,6 +153,30 @@
 				topStart: {
 					buttons: ['copy', 'csv', 'excel', 'pdf', 'print']
 				}
+			}
+		});
+	</script>
+	@* Chọn item nào sẽ hiện màu item đó *@
+	<script>
+			document.addEventListener("DOMContentLoaded", function () {
+			// Lấy tất cả các menu item từ navbar
+			const menuItems = document.querySelectorAll("#navbar li a");
+
+			// Thêm sự kiện click cho tất cả các menu item
+			menuItems.forEach(item => {
+				item.addEventListener("click", function () {
+					// Xóa class "active" khỏi tất cả các menu item
+					menuItems.forEach(link => link.classList.remove("active"));
+
+					// Thêm class "active" cho menu item hiện tại
+					this.classList.add("active");
+				});
+			});
+
+			// Tự động gán class "active" cho menu item có controller là "Product"
+			const defaultItem = document.querySelector("a[asp-controller='Product']");
+			if (defaultItem) {
+				defaultItem.classList.add("active");
 			}
 		});
 	</script>

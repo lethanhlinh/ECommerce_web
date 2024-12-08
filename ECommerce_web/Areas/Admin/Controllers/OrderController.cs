@@ -9,7 +9,7 @@ namespace ECommerce_web.Areas.Admin.Controllers
 {
 	[Area("Admin")]
 	[Route("Admin/Order")]
-	//[Authorize("Admin,Author")]
+	[Authorize(Roles = "Admin,Author")]
 	public class OrderController : Controller
 	{
 		private readonly DataContext _dataContext;

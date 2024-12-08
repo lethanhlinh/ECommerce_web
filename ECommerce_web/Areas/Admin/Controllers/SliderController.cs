@@ -11,7 +11,7 @@ namespace ECommerce_web.Areas.Admin.Controllers
 
 	[Area("Admin")]
 	//[Route("Admin/Slider")]
-	//[Authorize(Roles = "Publisher")]
+	[Authorize(Roles = "Admin, Publisher")]
 	public class SliderController : Controller
 	{
         private readonly IWebHostEnvironment _iwebHostEnviroment;

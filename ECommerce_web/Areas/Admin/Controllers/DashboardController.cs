@@ -1,12 +1,13 @@
 ﻿using ECommerce_web.Repository;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace ECommerce_web.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    //[Route("Admin/Dashboard")]
-    //[Authorize(Roles = "Admin,Author")]
+    [Route("Admin/Dashboard")]
+    [Authorize(Roles = "Admin,Author")]
     public class DashboardController : Controller
     {
         private readonly DataContext _dataContext;
@@ -46,9 +47,6 @@ namespace ECommerce_web.Areas.Admin.Controllers
             return Json(data); //Trả về Json 
         }
 
-
-        [HttpPost]
-        [Route("GetChartDataBySelect")]
         [HttpPost]
         [Route("GetChartDataBySelect")]
         public IActionResult GetChartDataBySelect(DateTime startDate, DateTime endDate)

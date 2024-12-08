@@ -8,8 +8,8 @@ using Microsoft.EntityFrameworkCore;
 namespace ECommerce_web.Areas.Admin.Controllers
 {
     [Area("Admin")]
-	//[Route("Admin/Product")]
-	//[Authorize(Roles ="Admin")]
+	[Route("Admin/Product")]
+	[Authorize(Roles ="Admin")]
 	public class ProductController : Controller
     {
         private readonly DataContext _dataContext;
@@ -19,13 +19,13 @@ namespace ECommerce_web.Areas.Admin.Controllers
             _dataContext = context;
             _iwebHostEnviroment = webHostEnvironment;
         }
-		//[Route("Index")]
+		[Route("Index")]
         public async Task<IActionResult> Index()
         {
             return View(await _dataContext.Products.OrderByDescending(p => p.Id).Include(p => p.Category).Include(p => p.Brand).ToListAsync());
         }
         [HttpGet]
-		//[Route("Create")]
+		[Route("Create")]
 		public IActionResult Create()
         {
             ViewBag.Categories = new SelectList(_dataContext.Categories, "Id", "Name");
@@ -33,7 +33,7 @@ namespace ECommerce_web.Areas.Admin.Controllers
             return View();
         }
         [HttpPost]
-		//[Route("Create")]
+		[Route("Create")]
 		[ValidateAntiForgeryToken]
 		public async Task<IActionResult> Create(ProductModel product)
 		{
@@ -85,7 +85,7 @@ namespace ECommerce_web.Areas.Admin.Controllers
             return View(product);
 		}
 		[HttpGet]
-		//[Route("Edit")]
+		[Route("Edit/{Id}")]
         public async Task<IActionResult> Edit(long Id)
         {
             ProductModel product = await _dataContext.Products.FindAsync(Id);
@@ -95,6 +95,7 @@ namespace ECommerce_web.Areas.Admin.Controllers
             return View(product);
         }
 		[HttpPost]
+		[Route("Edit/{Id}")]
 		[ValidateAntiForgeryToken]
 		public async Task<IActionResult> Edit(ProductModel product)
 		{
@@ -170,7 +171,7 @@ namespace ECommerce_web.Areas.Admin.Controllers
 			TempData["error"] = "Thông tin sản phẩm không hợp lệ!";
 			return View(product);
 		}
-		//[Route("Delete")]
+		[Route("Delete")]
 		public async Task<IActionResult> Delete(long Id)
         {
             ProductModel product = await _dataContext.Products.FindAsync(Id);

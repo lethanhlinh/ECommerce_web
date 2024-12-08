@@ -7,8 +7,8 @@ using Microsoft.EntityFrameworkCore;
 namespace ECommerce_web.Areas.Admin.Controllers
 {
     [Area("Admin")]
-	//[Route("Admin/Brand")]
-	//[Authorize(Roles = "Admin,Author")]
+	[Route("Admin/Brand")]
+	[Authorize(Roles = "Admin,Author")]
 	public class BrandController : Controller
     {
 
@@ -17,19 +17,19 @@ namespace ECommerce_web.Areas.Admin.Controllers
         {
             _dataContext = dataContext;
         }
-		//[Route("Index")]
+		[Route("Index")]
         public async Task<IActionResult> Index()
         {
             return View(await _dataContext.Brands.OrderByDescending(c => c.Id).ToListAsync());
         }
-        //[Route("Create")]
+        [Route("Create")]
         public async Task<IActionResult> Create()
         {
             return View();
         }
 
 		[HttpPost]
-        //[Route("Create")]
+        [Route("Create")]
         [ValidateAntiForgeryToken]
 		public async Task<IActionResult> Create(BrandModel brand)
 		{
@@ -67,7 +67,7 @@ namespace ECommerce_web.Areas.Admin.Controllers
 
 			return View(brand);
 		}
-        //[Route("Delete")]
+        [Route("Delete")]
         public async Task<IActionResult> Delete(int Id)
 		{
 			BrandModel brand = await _dataContext.Brands.FindAsync(Id);
@@ -81,7 +81,7 @@ namespace ECommerce_web.Areas.Admin.Controllers
 
 		//Edit danh mục
 		[HttpGet]
-        //[Route("Edit")]
+        [Route("Edit/{Id}")]
         public async Task<IActionResult> Edit(int Id)
 		{
 			BrandModel brand = await _dataContext.Brands.FindAsync(Id);
@@ -90,7 +90,7 @@ namespace ECommerce_web.Areas.Admin.Controllers
 
 
 		[HttpPost]
-        //[Route("Edit")]
+        [Route("Edit/{Id}")]
         [ValidateAntiForgeryToken]
 		public async Task<IActionResult> Edit(BrandModel brand)
 		{

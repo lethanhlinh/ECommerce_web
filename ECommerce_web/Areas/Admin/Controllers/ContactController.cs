@@ -1,5 +1,6 @@
 ﻿using ECommerce_web.Models;
 using ECommerce_web.Repository;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -9,7 +10,7 @@ namespace ECommerce_web.Areas.Admin.Controllers
 {
     [Area("Admin")]
     //[Route("Admin/Brand")]
-    //[Authorize(Roles = "Admin,Author")]
+    [Authorize(Roles = "Admin,Author")]
     public class ContactController : Controller
     {
     private readonly DataContext _dataContext;

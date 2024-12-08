@@ -1,5 +1,6 @@
 ﻿using ECommerce_web.Models;
 using ECommerce_web.Repository;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -7,7 +8,7 @@ namespace ECommerce_web.Areas.Admin.Controllers
 {
     [Area("Admin")]
     [Route("Admin/Shipping")]
-    //[Authorize(Roles = "Publisher,Author, Admin")]
+    [Authorize(Roles = "Publisher,Author, Admin")]
     public class ShippingController : Controller
     {
         private readonly DataContext _dataContext;

@@ -1,5 +1,6 @@
 ﻿using ECommerce_web.Models;
 using ECommerce_web.Repository;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -7,7 +8,7 @@ namespace ECommerce_web.Areas.Admin.Controllers
 {
 	[Area("Admin")]
 	//[Route("Admin/Coupon")]
-	//[Authorize(Roles = "Admin")]
+	[Authorize(Roles = "Admin")]
 	public class CouponController : Controller
 	{
 		private readonly DataContext _dataContext;
