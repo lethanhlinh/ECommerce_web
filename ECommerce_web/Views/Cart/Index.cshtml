@@ -288,12 +288,16 @@
 
                             <td></td>
                             <td>
+                              
                                 <form method="POST" asp-action="CreatePaymentUrl" asp-controller="Payment">
+                                    <input type="hidden" name="FullName" value="@User.Identity.Name" />
                                     <input type="hidden" name="Amount" value="@Model.GrandTotal" />
-                                    <input type="hidden" name="OrderId" value="@Guid.NewGuid().ToString()" />
-                                    <input type="hidden" name="OrderInfo" value="Thanh toán cho đơn hàng tại Azure Store" />
-                                    <input type="hidden" name="FullName" value="AzureStore" />
-                                    <button class="btn btn-danger" name="PayUrl" type="submit">Thanh toán với Momo</button>
+
+                                    <input type="hidden" name="OrderInfo" value="Thanh toán đặt hàng qua Momo tại LinhStore" />
+
+
+                                    <br />
+                                    <button class="btn btn-danger" name="PayUrl" type="submit">Pay with MoMo</button>
                                 </form>
 
                                 <form method="POST" asp-action="CreatePaymentUrlVnpay" asp-controller="Payment">
@@ -302,7 +306,7 @@
                                     <input type="hidden" name="OrderType" value="shopping" />
                                     <input type="hidden" name="OrderDescription" value="Thanh toán đặt hàng qua Vnpay tại AzureStore" />
                                     <br />
-                                    <button class="btn btn-success" type="submit">Thanh toán với Vnpay</button>
+                                    <button class="btn btn-success" type="submit" name="PayUrl">Thanh toán với Vnpay</button>
                                 </form>
 
                             </td>

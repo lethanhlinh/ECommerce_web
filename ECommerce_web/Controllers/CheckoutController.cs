@@ -2,6 +2,7 @@
 using ECommerce_web.Models;
 using ECommerce_web.Models.ViewModels;
 using ECommerce_web.Repository;
+using ECommerce_web.Services.Momo;
 using ECommerce_web.Services.Vnpay;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -15,11 +16,13 @@ namespace ECommerce_web.Controllers
         private readonly DataContext _dataContext;
         private readonly IEmailSender _emailSender;
         private readonly IVnPayService _vnPayService;
-        public CheckoutController(IEmailSender emailSender, DataContext context, IVnPayService vnPayService)
+        private readonly IMomoService _momoService;
+        public CheckoutController(IEmailSender emailSender, DataContext context, IVnPayService vnPayService, IMomoService momoService)
         {
             _dataContext = context;
             _emailSender = emailSender;
             _vnPayService = vnPayService;
+            _momoService = momoService;
         }
 
         public async Task<IActionResult> Checkout()
@@ -90,8 +93,40 @@ namespace ECommerce_web.Controllers
             return View();
         }
 
-        //ham tra ve cua Vnpay
-       
+        //ham tra ve cua Momo
+
+
+        [HttpGet]
+        public async Task<IActionResult> PaymentCallBack(MomoInfoModel model)
+        {
+           var response = _momoService.PaymentExecuteAsync(HttpContext.Request.Query);
+            var requestQuery = HttpContext.Request.Query; //Lấy theo mã trên http
+            
+            //if (requestQuery["resultCode"] != 0)  // Do không thể quét mã QR nên đảo ngược code
+            //{
+            //    //Neu ko thanh cong luu vao CSDL
+            //    var newMomoInsert = new MomoInfoModel
+            //    {
+            //        OrderId = requestQuery["orderId"],
+            //        FullName = User.FindFirstValue(ClaimTypes.Email),
+            //        Amount = decimal.Parse(requestQuery["amount"]),
+            //        OrderInfo = requestQuery["orderInfo"],
+            //        DatePaid = DateTime.Now
+            //    };
+            //    _dataContext.Add(newMomoInsert);
+            //    await _dataContext.SaveChangesAsync();
+            //}
+
+            //else
+            //{
+            //    TempData["success"] = "Đã hủy giao dịch MOMO";
+            //    return RedirectToAction("Index", "Cart");
+            //}
+            // var checkoutResult = await Checkout(requestQuery["orderId"]);
+            return RedirectToAction("Index", "Cart");
+          //  return View(response);
+        }
+
         [HttpGet]
         public IActionResult PaymentCallbackVnpay()
         {

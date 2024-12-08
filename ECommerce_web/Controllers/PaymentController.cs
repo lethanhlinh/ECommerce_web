@@ -23,12 +23,13 @@ namespace ECommerce_web.Controllers
             return Redirect(response.PayUrl);
         }
 
-        [HttpGet]
-        public IActionResult PaymentCallback()
-        {
-            var response = _momoService.PaymentExecuteAsync(HttpContext.Request.Query);
-            return View(response);
-        }
+        //[HttpGet]
+        //public IActionResult PaymentCallback()
+        //{
+        //    var response = _momoService.PaymentExecuteAsync(HttpContext.Request.Query);
+           
+        //    return View(response);
+        //}
 
         //Vnpay
 

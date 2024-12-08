@@ -14,4 +14,5 @@
         public string Deeplink { get; set; }
         public string DeeplinkWebInApp { get; set; }
     }
+
 }

@@ -11,22 +11,16 @@ namespace ECommerce_web.Services.Momo
     public class MomoService : IMomoService
     {
         private readonly IOptions<MomoOptionModel> _options;
-
         public MomoService(IOptions<MomoOptionModel> options)
         {
             _options = options;
         }
 
+
         public async Task<MomoCreatePaymentResponseModel> CreatePaymentAsync(OrderInfoModel model)
         {
-            if (string.IsNullOrEmpty(model.FullName) || string.IsNullOrEmpty(model.OrderInfo) || model.Amount <= 0)
-            {
-                throw new ArgumentException("Thông tin đơn hàng không hợp lệ.");
-            }
-
             model.OrderId = DateTime.UtcNow.Ticks.ToString();
-            model.OrderInfo = $"Khách hàng: {model.FullName}. Nội dung: {model.OrderInfo}";
-
+            model.OrderInfo = "Khách hàng: " + model.FullName + ". Nội dung: " + model.OrderInfo;
             var rawData =
                 $"partnerCode={_options.Value.PartnerCode}" +
                 $"&accessKey={_options.Value.AccessKey}" +
@@ -37,12 +31,14 @@ namespace ECommerce_web.Services.Momo
                 $"&returnUrl={_options.Value.ReturnUrl}" +
                 $"&notifyUrl={_options.Value.NotifyUrl}" +
                 $"&extraData=";
+
             var signature = ComputeHmacSha256(rawData, _options.Value.SecretKey);
 
             var client = new RestClient(_options.Value.MomoApiUrl);
             var request = new RestRequest() { Method = Method.Post };
             request.AddHeader("Content-Type", "application/json; charset=UTF-8");
 
+            // Create an object representing the request data
             var requestData = new
             {
                 accessKey = _options.Value.AccessKey,
@@ -61,41 +57,45 @@ namespace ECommerce_web.Services.Momo
             request.AddParameter("application/json", JsonConvert.SerializeObject(requestData), ParameterType.RequestBody);
 
             var response = await client.ExecuteAsync(request);
+            var momoResponse = JsonConvert.DeserializeObject<MomoCreatePaymentResponseModel>(response.Content);
+            return momoResponse;
 
-            if (!response.IsSuccessful || string.IsNullOrEmpty(response.Content))
-            {
-                throw new Exception("Không thể tạo URL thanh toán từ Momo. Kiểm tra thông tin cấu hình.");
-            }
-
-            return JsonConvert.DeserializeObject<MomoCreatePaymentResponseModel>(response.Content);
         }
+
 
         public MomoExecuteResponseModel PaymentExecuteAsync(IQueryCollection collection)
         {
-            if (!collection.ContainsKey("amount") ||
-                !collection.ContainsKey("orderInfo") ||
-                !collection.ContainsKey("orderId"))
-            {
-                throw new ArgumentException("Các tham số callback từ Momo không hợp lệ.");
-            }
+            var amount = collection.First(s => s.Key == "amount").Value;
+            var orderInfo = collection.First(s => s.Key == "orderInfo").Value;
+            var orderId = collection.First(s => s.Key == "orderId").Value;
 
-            return new MomoExecuteResponseModel
+            return new MomoExecuteResponseModel()
             {
-                Amount = collection["amount"],
-                OrderID = collection["orderId"],
-                OrderInfo = collection["orderInfo"]
+                Amount = amount,
+                OrderId = orderId,
+                OrderInfo = orderInfo
+
             };
         }
 
-        public string ComputeHmacSha256(string message, string secretKey)
+
+        private string ComputeHmacSha256(string message, string secretKey)
         {
             var keyBytes = Encoding.UTF8.GetBytes(secretKey);
             var messageBytes = Encoding.UTF8.GetBytes(message);
 
-            using var hmac = new HMACSHA256(keyBytes);
-            var hashBytes = hmac.ComputeHash(messageBytes);
+            byte[] hashBytes;
 
-            return BitConverter.ToString(hashBytes).Replace("-", "").ToLower();
+            using (var hmac = new HMACSHA256(keyBytes))
+            {
+                hashBytes = hmac.ComputeHash(messageBytes);
+            }
+
+            var hashString = BitConverter.ToString(hashBytes).Replace("-", "").ToLower();
+
+            return hashString;
         }
     }
+
+
 }

@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ECommerce_web.Repository
 {
-	public class DataContext : IdentityDbContext<AppUserModel>
+    public class DataContext : IdentityDbContext<AppUserModel>
 	{
 		public DataContext(DbContextOptions<DataContext> options) : base(options)
 		{
@@ -26,6 +26,8 @@ namespace ECommerce_web.Repository
 		public DbSet<ShippingModel> Shippings { get; set; }
 		public DbSet<CouponModel> Coupons { get; set; }
         public DbSet<StatisticalModel> Statisticals { get; set; }
+        public DbSet<MomoInfoModel> MomoInfors { get; set; }
+
 
     }
 }

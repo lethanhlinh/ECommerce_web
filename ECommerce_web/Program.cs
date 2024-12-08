@@ -17,10 +17,7 @@ internal class Program
     private static void Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
-        //Connect MomoAPI
-        builder.Services.Configure<MomoOptionModel>(builder.Configuration.GetSection("MomoAPI"));
-        builder.Services.AddScoped<IMomoService, MomoService>();
-
+       
 
         // Connection db
         builder.Services.AddDbContext<DataContext>(options =>
@@ -69,6 +66,10 @@ internal class Program
             options.ClientId = builder.Configuration.GetSection("GoogleKeys:ClientId").Value;
             options.ClientSecret = builder.Configuration.GetSection("GoogleKeys:ClientSecret").Value;
         });
+
+        //Momo API Payment
+        builder.Services.Configure<MomoOptionModel>(builder.Configuration.GetSection("MomoAPI"));
+        builder.Services.AddScoped<IMomoService, MomoService>();
 
         //Connect VNPay API
         builder.Services.AddScoped<IVnPayService, VnPayService>();
