@@ -193,7 +193,7 @@ namespace ECommerce_web.Areas.Admin.Controllers
                 }
             }
             _dataContext.Remove(product);
-            //await _dataContext.SaveChangesAsync();
+            await _dataContext.SaveChangesAsync();
             TempData["success"] = "Sản phẩm đã được xóa!!!";
             return RedirectToAction("Index","Product");
         }

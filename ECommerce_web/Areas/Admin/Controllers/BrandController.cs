@@ -74,7 +74,7 @@ namespace ECommerce_web.Areas.Admin.Controllers
 
 
 			_dataContext.Brands.Remove(brand);
-			//await _dataContext.SaveChangesAsync();
+			await _dataContext.SaveChangesAsync();
 			TempData["success"] = "Thương hiệu đã được xóa!!!";
 			return RedirectToAction("Index");
 		}
