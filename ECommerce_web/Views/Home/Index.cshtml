@@ -23,6 +23,7 @@
 		padding: 15px;
 		box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 		text-align: center;
+		height: 500px;
 	}
 
 	.productinfo img {
@@ -41,7 +42,7 @@
 		font-size: 14px;
 		color: #555;
 	}
-
+	
 </style>
 
 
@@ -63,7 +64,7 @@
 							<a asp-action = "Details" asp-controller = "Product" asp-route-Id = "@item.Id">
 								<img src="~/media/products/@item.Image" alt="@item.Name" width="auto" height="200px"/>
 								<h2>$@item.Price.ToString("#,##0 VND")</h2>
-								<p>Danh mục : @item.Category.Name</p>
+								<h5>@item.Name</h5>
 								<p>Thương hiệu : @item.Brand.Name</p>
 							</a>
 							@*		<a class="btn btn-default add-to-cart" asp-action="Add" asp-controller="Cart" asp-route-Id="@item.Id"><i class="fa fa-shopping-cart"></i>Add to cart</a>*@	
