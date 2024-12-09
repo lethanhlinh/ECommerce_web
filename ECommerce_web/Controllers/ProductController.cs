@@ -1,12 +1,14 @@
 ﻿using ECommerce_web.Models;
 using ECommerce_web.Models.ViewModels;
 using ECommerce_web.Repository;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection.Metadata.Ecma335;
 
 namespace ECommerce_web.Controllers
 {
+	[Authorize(Roles = "Admin")]
 	public class ProductController : Controller
 	{
 		private readonly DataContext _dataContext;
@@ -47,6 +49,8 @@ namespace ECommerce_web.Controllers
 
 			return View(viewModel);
 		}
+
+		//Hàm comment
 		public async Task<IActionResult> CommentProduct(RatingModel rating)
 		{
 			if (ModelState.IsValid)

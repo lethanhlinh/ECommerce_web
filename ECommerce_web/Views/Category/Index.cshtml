@@ -172,10 +172,10 @@
 			$( function() {
 			  $( "#slider-range" ).slider({
 				range: true,
-				step: 5,
+				step: 20000,
 				min: 0,
-				max: 130,
-				values: [ 10, 30 ],
+				max: 999999,
+				values: [ 100000, 300000 ],
 				slide: function(event, ui ) {
 					 $("#amount").val(
 						 new Intl.NumberFormat('vn-VN', { style: 'currency', currency: 'VND' })
