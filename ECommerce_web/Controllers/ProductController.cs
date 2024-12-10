@@ -1,14 +1,11 @@
 ﻿using ECommerce_web.Models;
 using ECommerce_web.Models.ViewModels;
 using ECommerce_web.Repository;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.Reflection.Metadata.Ecma335;
 
 namespace ECommerce_web.Controllers
 {
-	[Authorize(Roles = "Admin")]
 	public class ProductController : Controller
 	{
 		private readonly DataContext _dataContext;
@@ -39,13 +36,14 @@ namespace ECommerce_web.Controllers
 				.Where(p => p.CategoryId == productsById.CategoryId && p.Id !=productsById.Id)
 				.Take(4)
 				.ToListAsync();
-			ViewBag.RelatedProducts = relatedProducts;
-
+			// Truyền dữ liệu vào ViewModel
 			var viewModel = new ProductDetailsViewModel
 			{
 				ProductDetails = productsById,
-			
+				Rating = productsById.Ratings // Truyền Rating duy nhất (vì quan hệ 1-1)
 			};
+
+			ViewBag.RelatedProducts = relatedProducts;
 
 			return View(viewModel);
 		}
@@ -70,7 +68,8 @@ namespace ECommerce_web.Controllers
 
 				TempData["success"] = "Thêm đánh giá thành công";
 
-				return Redirect(Request.Headers["Referer"]);
+				// Chuyển hướng về trang Details để hiển thị bình luận
+				return RedirectToAction("Details", new { id = rating.ProductId });
 			}
 			else
 			{
@@ -87,7 +86,8 @@ namespace ECommerce_web.Controllers
 				
 				return RedirectToAction("Details" , new {id=rating.ProductId});
 			}
-			return Redirect(Request.Headers["Referer"]);
+			// Chuyển hướng về trang Details để hiển thị bình luận
+			return RedirectToAction("Details", new { id = rating.ProductId });
 		}
 	}
 }

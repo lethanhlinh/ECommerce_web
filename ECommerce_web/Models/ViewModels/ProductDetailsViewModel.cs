@@ -12,5 +12,7 @@ namespace ECommerce_web.Models.ViewModels
 		[Required(ErrorMessage = "Yêu cầu nhập Email")]
 		public string Email { get; set; }
 
+		// Thêm danh sách chi tiết sản phẩm
+		public RatingModel Rating { get; set; }
 	}
 }
